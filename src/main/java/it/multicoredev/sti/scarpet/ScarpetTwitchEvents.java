@@ -140,13 +140,14 @@ public class ScarpetTwitchEvents extends Event {
             );
         }
     };
-    public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION_GIFT = new ScarpetTwitchEvents("twitch_subscription_gift", 3, false) {
+    public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION_GIFT = new ScarpetTwitchEvents("twitch_subscription_gift", 4, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
                             ((c, t) -> new StringValue(playerName)),
                             ((c, t) -> new StringValue(event.getNickname())),
+                            ((c, t) -> new NumericValue(event.getSubscriptionTier())),
                             ((c, t) -> new NumericValue(event.getDonationAmount()))
                     ),
                     () -> {

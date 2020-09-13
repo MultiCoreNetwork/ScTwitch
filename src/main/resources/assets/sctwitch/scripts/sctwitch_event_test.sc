@@ -18,17 +18,13 @@ __on_twitch_subscription(playerNick, actor, message, tier, months, resubbed, str
     print('  - gifted: '+if(gifted,'true','false'))
 );
 
-__on_twitch_subscription(playerNick, actor, message, tier, months, resubbed, streak, gifted) -> (
+__on_twitch_subscription_gift(playerNick, actor, tier, amount) -> (
     print('');
-    print('__on_twitch_subscription(playerNick, actor, message, tier, months, resubbed, streak, gifted)');
+    print('__on_twitch_bits(playerNick, actor, message, amount)');
     print('  - playerNick: '+playerNick);
 	print('  - actor: '+actor);
-	print('  - message: '+message);
 	print('  - tier: '+tier);
-	print('  - months: '+months);
-	print('  - resubbed: '+if(resubbed,'true','false'));
-	print('  - streak: '+streak);
-    print('  - gifted: '+if(gifted,'true','false'))
+	print('  - amount: '+amount)
 );
 
 __on_twitch_donation(playerNick, actor, message, amount, formattedAmount, currency) -> (

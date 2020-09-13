@@ -1,8 +1,9 @@
 package it.multicoredev.sti.twitch.streamlabs;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -96,8 +97,8 @@ public class StreamlabsSocket {
     }
 
     private void onLiveEvent(Object... args) {
-        JsonObject eventJson = (JsonObject) args[0];
-        JsonArray msgs = extractMessages(eventJson);
+        JSONObject eventJson = (JSONObject) args[0];
+        JSONArray msgs = extractMessages(eventJson);
         if (msgs == null) return;
 
         String eventType = extractFrom(eventJson, "type", String.class, null);
@@ -139,20 +140,20 @@ public class StreamlabsSocket {
         return options;
     }
 
-    private JsonArray extractMessages(JsonObject event) {
-        JsonElement messageField = event.get("message");
+    private JSONArray extractMessages(JSONObject event) {
+        try {
+            Object messageField = event.get("message");
 
-        if (messageField instanceof JsonArray)
-            return extractFrom(event, "message", JsonArray.class, new JsonArray());
-        else if (messageField instanceof JsonObject)  {
-            JsonArray r = new JsonArray();
-            r.add(messageField);
-            return r;
+            if (messageField instanceof JSONArray)
+                return extractFrom(event, "message", JSONArray.class, new JSONArray());
+            else if (messageField instanceof JSONObject) return new JSONArray().put(messageField);
+            return null;
+        } catch (JSONException e) {
+            return null;
         }
-        return null;
     }
 
-    private int extractTier(JsonObject message, String tierFieldName) {
+    private int extractTier(JSONObject message, String tierFieldName) {
         String tierString = extractFrom(message, tierFieldName, String.class, null);
 
         if (tierString == null) return -1;
@@ -163,7 +164,7 @@ public class StreamlabsSocket {
         return -1;
     }
 
-    private Number extractNumberFrom(JsonObject json, String key, Number defaultValue) {
+    private Number extractNumberFrom(JSONObject json, String key, Number defaultValue) {
         Object obj;
 
         try {
@@ -175,7 +176,7 @@ public class StreamlabsSocket {
         }
     }
 
-    private <T> T extractFrom(JsonObject json, String key, Class<T> type, T defaultValue) {
+    private <T> T extractFrom(JSONObject json, String key, Class<T> type, T defaultValue) {
         try {
             Object obj = json.get(key);
             return type.cast(obj);
@@ -184,10 +185,14 @@ public class StreamlabsSocket {
         }
     }
 
-    private void forEach(JsonArray array, Consumer<JsonObject> consumer) {
-        for (int i = 0; i < array.size(); i++) {
-            JsonObject json = array.get(i).getAsJsonObject();
-            consumer.accept(json);
+    private void forEach(JSONArray array, Consumer<JSONObject> consumer) {
+        for (int i = 0; i < array.length(); i++) {
+            try {
+                JSONObject json = array.getJSONObject(i);
+                consumer.accept(json);
+            } catch (JSONException e) {
+                throw new InternalError("Error performing JSONArray forEachMessage.");
+            }
         }
     }
 }
