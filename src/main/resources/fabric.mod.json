@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "sctwitch",
+  "version": "${version}",
+  "name": "ScTwitch",
+  "description": "Scarpet Twitch Integration",
+  "authors": [
+    "LoreSchaeffer","iMamoMC","BisUmTo","Gnottero","Gnembon"
+  ],
+  "contributors": [],
+  "contact": {},
+  "license": "BSD-3-Clause",
+  "icon": "assets/sctwitch/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [],
+    "client": [],
+    "server": []
+  },
+  "mixins": [
+    "sctwitch.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "1.16.x",
+    "fabricloader": ">=0.9.3",
+    "carpet": "1.4.11"
+  }
+}
