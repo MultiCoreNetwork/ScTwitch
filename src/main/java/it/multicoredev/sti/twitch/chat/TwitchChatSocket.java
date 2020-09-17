@@ -70,7 +70,7 @@ public class TwitchChatSocket {
 
     public void stop() {
         connected = false;
-        System.out.println("IRC Disconnect");
+        //System.out.println("IRC Disconnect");
 
         try {
             if (socket != null) socket.close();
@@ -94,7 +94,7 @@ public class TwitchChatSocket {
 
     private void connect() {
         try {
-            System.out.println("&3Connecting to " + channel + " chat...");
+            //System.out.println("&3Connecting to " + channel + " chat...");
 
             socket = new Socket(SOCKET_ADDRESS, SOCKET_PORT);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), UTF_8));
@@ -108,7 +108,7 @@ public class TwitchChatSocket {
             out.write(String.format("JOIN #%s\n\r", channel.toLowerCase()).getBytes(UTF_8));
 
             connected = true;
-            System.out.println("Connected");
+            System.out.println("Connected to " + channel + " chat...");
 
             String response;
             while ((response = in.readLine()) != null) {
@@ -122,8 +122,7 @@ public class TwitchChatSocket {
     }
 
     private void processResponse(String response) {
-        System.out.println(response);
-
+        //System.out.println(response);
         if (response.equals("PING :tmi.twitch.tv")) {
             try {
                 out.write("PONG :tmi.twitch.tv\n\r".getBytes(UTF_8));
@@ -138,7 +137,7 @@ public class TwitchChatSocket {
             event.setBadges(twitchChatMessage.badges);
             event.setSubscriptionMonths(twitchChatMessage.subscriptionMonths);
             handler.handleTwitchEvent(event);
-            System.out.println(twitchChatMessage.username + " " + twitchChatMessage.message);
+            //System.out.println(twitchChatMessage.username + " " + twitchChatMessage.message);
         }
     }
 }
