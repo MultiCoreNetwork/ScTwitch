@@ -3,12 +3,15 @@ package it.multicoredev.sti.scarpet;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import carpet.CarpetServer;
 import carpet.script.CarpetEventServer.Event;
+import carpet.script.value.ListValue;
 import carpet.script.value.NumericValue;
 import carpet.script.value.StringValue;
-import it.multicoredev.sti.twitch.streamlabs.TwitchEvent;
+import it.multicoredev.sti.twitch.TwitchEvent;
 
 public class ScarpetTwitchEvents extends Event {
 
@@ -161,7 +164,36 @@ public class ScarpetTwitchEvents extends Event {
             );
         }
     };
+    public static ScarpetTwitchEvents TWITCH_CHAT_MESSAGE = new ScarpetTwitchEvents("twitch_chat_message", 5, false) {
+        @Override
+        public void onTwitchEvent(String playerName, TwitchEvent event) {
+            handler.call(
+                    () -> Arrays.asList(
+                            ((c, t) -> new StringValue(playerName)),
+                            ((c, t) -> new StringValue(event.getNickname())),
+                            ((c, t) -> new StringValue(event.getMsg())),
+                            ((c, t) -> new ListValue(getBadges(event))),
+                            ((c, t) -> new NumericValue(event.getSubscriptionMonths()))
+                    ),
+                    () -> {
+                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
+                        if (player != null) {
+                            return player.getCommandSource();
+                        } else {
+                            return CarpetServer.minecraft_server.getCommandSource();
+                        }
+                    }
+            );
+        }
 
+        private Set<StringValue> getBadges(TwitchEvent event) {
+            Set<StringValue> badges = new HashSet<>();
+            for (String b : event.getBadges()) {
+                badges.add(new StringValue(b));
+            }
+            return badges;
+        }
+    };
 
     public ScarpetTwitchEvents(String name, int reqArgs, boolean isGlobalOnly) {
         super(name, reqArgs, isGlobalOnly);

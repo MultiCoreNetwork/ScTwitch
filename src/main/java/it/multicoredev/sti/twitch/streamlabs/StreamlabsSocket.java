@@ -11,10 +11,12 @@ import java.util.function.Consumer;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import it.multicoredev.sti.twitch.TwitchEvent;
+import it.multicoredev.sti.twitch.TwitchEventHandler;
 
 /**
  * Copyright © 2020 by Lorenzo Magni
- * This file is part of ScTwitch.
+ * This file is part of MCLib.
  * MCLib is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:

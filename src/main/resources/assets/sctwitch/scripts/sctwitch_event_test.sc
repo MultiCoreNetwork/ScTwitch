@@ -61,4 +61,14 @@ __on_twitch_host(playerNick, actor, viewers) -> (
     print('  - playerNick: '+playerNick);
 	print('  - actor: '+actor);
 	print('  - viewers: '+viewers)
+);
+
+__on_twitch_chat_message(playerNick, actor, message, badges, subscriptionMonths) -> (
+    print('');
+    print('__on_twitch_chat_message(playerNick, actor, message, badges, subscriptionMonths)');
+    print('  - playerNick: '+playerNick);
+	print('  - actor: '+actor);
+	print('  - message: '+message);
+	print('  - badges: '+badges);
+	print('  - subscriptionMonths: '+subscriptionMonths)
 )

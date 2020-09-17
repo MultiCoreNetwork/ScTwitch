@@ -1,4 +1,4 @@
-package it.multicoredev.sti.twitch.streamlabs;
+package it.multicoredev.sti.twitch;
 
 import it.multicoredev.sti.scarpet.ScarpetTwitchEvents;
 
@@ -30,6 +30,8 @@ public class TwitchEventHandler {
             ScarpetTwitchEvents.TWITCH_RAID.onTwitchEvent(nickname, event);
         } else if (event.getType().equals("subMysteryGift")) {
             ScarpetTwitchEvents.TWITCH_SUBSCRIPTION_GIFT.onTwitchEvent(nickname, event);
+        } else if (event.getType().equals("chatMessage")) {
+            ScarpetTwitchEvents.TWITCH_CHAT_MESSAGE.onTwitchEvent(nickname, event);
         }
     }
 

@@ -1,4 +1,4 @@
-package it.multicoredev.sti.twitch.streamlabs;
+package it.multicoredev.sti.twitch;
 
 import com.google.common.base.Defaults;
 
@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Copyright © 2020 by Lorenzo Magni
- * This file is part of ScTwitch.
+ * This file is part of MCLib.
  * MCLib is under "The 3-Clause BSD License", you can find a copy <a href="https://opensource.org/licenses/BSD-3-Clause">here</a>.
  * <p>
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@ public class TwitchEvent {
 
     private String nickname;
     private String msg;
+    private Set<String> badges;
 
     private double donationAmount;
     private String donationCurrency;
@@ -189,5 +190,13 @@ public class TwitchEvent {
 
     public void setFormattedAmount(String formatted_amount) {
         this.formattedAmount = formatted_amount;
+    }
+
+    public Set<String> getBadges() {
+        return badges;
+    }
+
+    public void setBadges(Set<String> badges) {
+        this.badges = badges;
     }
 }
