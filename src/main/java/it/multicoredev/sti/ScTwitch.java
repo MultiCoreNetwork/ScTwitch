@@ -52,6 +52,7 @@ public class ScTwitch implements CarpetExtension {
     public void createSockets() {
         try {
             streamlabsSockets.clear();
+            twitchChatSockets.clear();
             Path configDir = FabricLoader.getInstance().getConfigDir().normalize();
             Files.createDirectories(configDir);
             Path configFile = configDir.resolve("sctwitch.json").normalize();
@@ -79,7 +80,7 @@ public class ScTwitch implements CarpetExtension {
     }
 
     @Override
-    public void onServerLoaded(MinecraftServer server) {
+    public void onGameStarted() {
         createSockets();
         startSockets();
     }

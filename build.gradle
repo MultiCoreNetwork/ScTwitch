@@ -26,10 +26,6 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "carpet:fabric-carpet:${project.minecraft_version}-${project.carpet_core_version}"
 
-	implementation group: 'org.json', name: 'json', version: '20200518'
-	include group: 'org.json', name: 'json', version: '20200518'
-	shadow group: 'org.json', name: 'json', version: '20200518'
-
 	implementation group: 'io.socket', name: 'socket.io-client', version: '1.0.0'
 	include group: 'io.socket', name: 'socket.io-client', version: '1.0.0'
 	shadow group: 'io.socket', name: 'socket.io-client', version: '1.0.0'
