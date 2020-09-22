@@ -20,7 +20,7 @@ __on_twitch_subscription(playerNick, actor, message, tier, months, resubbed, str
 
 __on_twitch_subscription_gift(playerNick, actor, tier, amount) -> (
     print('');
-    print('__on_twitch_bits(playerNick, actor, message, amount)');
+    print('__on_twitch_subscription_gift(playerNick, actor, message, amount)');
     print('  - playerNick: '+playerNick);
 	print('  - actor: '+actor);
 	print('  - tier: '+tier);
