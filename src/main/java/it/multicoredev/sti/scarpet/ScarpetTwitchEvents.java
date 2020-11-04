@@ -8,6 +8,7 @@ import java.util.Set;
 
 import carpet.CarpetServer;
 import carpet.script.CarpetEventServer.Event;
+import carpet.script.value.EntityValue;
 import carpet.script.value.ListValue;
 import carpet.script.value.NumericValue;
 import carpet.script.value.StringValue;
@@ -18,171 +19,123 @@ public class ScarpetTwitchEvents extends Event {
     public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION = new ScarpetTwitchEvents("twitch_subscription", 8, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                        new StringValue(playerName),
-                        new StringValue(event.getNickname()),
-                        new StringValue(event.getMsg()),
-                        new NumericValue(event.getSubscriptionTier()),
-                        new NumericValue(event.getSubscriptionMonths()),
-                        new NumericValue(event.isResubbed()),
-                        new NumericValue(event.getSubscriptionStreakMonths()),
-                        new NumericValue(event.isGifted())
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new StringValue(event.getMsg()),
+                            new NumericValue(event.getSubscriptionTier()),
+                            new NumericValue(event.getSubscriptionMonths()),
+                            new NumericValue(event.isResubbed()),
+                            new NumericValue(event.getSubscriptionStreakMonths()),
+                            new NumericValue(event.isGifted())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_DONATION = new ScarpetTwitchEvents("twitch_donation", 6, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                        new StringValue(playerName),
-                        new StringValue(event.getNickname()),
-                        new StringValue(event.getMsg()),
-                        new NumericValue(event.getDonationAmount()),
-                        new StringValue(event.getFormattedAmount()),
-                        new StringValue(event.getDonationCurrency())
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new StringValue(event.getMsg()),
+                            new NumericValue(event.getDonationAmount()),
+                            new StringValue(event.getFormattedAmount()),
+                            new StringValue(event.getDonationCurrency())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_FOLLOW = new ScarpetTwitchEvents("twitch_follow", 2, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                        new StringValue(playerName),
-                        new StringValue(event.getNickname())
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
+                            new StringValue(event.getNickname())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_BITS = new ScarpetTwitchEvents("twitch_bits", 4, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                            new StringValue(playerName),
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
                             new StringValue(event.getNickname()),
                             new StringValue(event.getMsg()),
                             new NumericValue(event.getDonationAmount())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_RAID = new ScarpetTwitchEvents("twitch_raid", 3, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                            new StringValue(playerName),
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
                             new StringValue(event.getNickname()),
                             new NumericValue(event.getRaiderCount())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_HOST = new ScarpetTwitchEvents("twitch_host", 3, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                            new StringValue(playerName),
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
                             new StringValue(event.getNickname()),
                             new NumericValue(event.getViewerCount())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION_GIFT = new ScarpetTwitchEvents("twitch_subscription_gift", 4, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                            new StringValue(playerName),
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
                             new StringValue(event.getNickname()),
                             new NumericValue(event.getSubscriptionTier()),
                             new NumericValue(event.getDonationAmount())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
     public static ScarpetTwitchEvents TWITCH_CHAT_MESSAGE = new ScarpetTwitchEvents("twitch_chat_message", 5, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
-                            new StringValue(playerName),
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
                             new StringValue(event.getNickname()),
                             new StringValue(event.getMsg()),
                             new ListValue(getBadges(event)),
                             new NumericValue(event.getSubscriptionMonths())
                     ),
-                    () -> {
-                        ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-                        if (player != null) {
-                            return player.getCommandSource();
-                        } else {
-                            return CarpetServer.minecraft_server.getCommandSource();
-                        }
-                    }
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
 

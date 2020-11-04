@@ -18,7 +18,8 @@
     "server": []
   },
   "mixins": [
-    "sctwitch.mixins.json"
+    "sctwitch.mixins.json",
+    "discarpet.mixins.json"
   ],
   "depends": {
     "minecraft": "1.16.x",

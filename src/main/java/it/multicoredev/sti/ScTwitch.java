@@ -15,6 +15,7 @@ import java.util.Map;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
+import carpet.script.CarpetExpression;
 import carpet.script.CarpetScriptServer;
 import carpet.script.bundled.BundledModule;
 import it.multicoredev.sti.config.Config;
@@ -34,6 +35,7 @@ public class ScTwitch implements CarpetExtension {
     static {
         CarpetServer.manageExtension(new ScTwitch());
         CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("sctwitch_event_test", false));
+        CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("chat_message_event_test", false));
     }
 
     public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
