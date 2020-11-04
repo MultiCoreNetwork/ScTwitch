@@ -20,14 +20,14 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new StringValue(event.getMsg())),
-                            ((c, t) -> new NumericValue(event.getSubscriptionTier())),
-                            ((c, t) -> new NumericValue(event.getSubscriptionMonths())),
-                            ((c, t) -> new NumericValue(event.isResubbed())),
-                            ((c, t) -> new NumericValue(event.getSubscriptionStreakMonths())),
-                            ((c, t) -> new NumericValue(event.isGifted()))
+                        new StringValue(playerName),
+                        new StringValue(event.getNickname()),
+                        new StringValue(event.getMsg()),
+                        new NumericValue(event.getSubscriptionTier()),
+                        new NumericValue(event.getSubscriptionMonths()),
+                        new NumericValue(event.isResubbed()),
+                        new NumericValue(event.getSubscriptionStreakMonths()),
+                        new NumericValue(event.isGifted())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -45,12 +45,12 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new StringValue(event.getMsg())),
-                            ((c, t) -> new NumericValue(event.getDonationAmount())),
-                            ((c, t) -> new StringValue(event.getFormattedAmount())),
-                            ((c, t) -> new StringValue(event.getDonationCurrency()))
+                        new StringValue(playerName),
+                        new StringValue(event.getNickname()),
+                        new StringValue(event.getMsg()),
+                        new NumericValue(event.getDonationAmount()),
+                        new StringValue(event.getFormattedAmount()),
+                        new StringValue(event.getDonationCurrency())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -68,8 +68,8 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname()))
+                        new StringValue(playerName),
+                        new StringValue(event.getNickname())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -87,10 +87,10 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new StringValue(event.getMsg())),
-                            ((c, t) -> new NumericValue(event.getDonationAmount()))
+                            new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new StringValue(event.getMsg()),
+                            new NumericValue(event.getDonationAmount())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -108,9 +108,9 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new NumericValue(event.getRaiderCount()))
+                            new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new NumericValue(event.getRaiderCount())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -128,9 +128,9 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new NumericValue(event.getViewerCount()))
+                            new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new NumericValue(event.getViewerCount())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -148,10 +148,10 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new NumericValue(event.getSubscriptionTier())),
-                            ((c, t) -> new NumericValue(event.getDonationAmount()))
+                            new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new NumericValue(event.getSubscriptionTier()),
+                            new NumericValue(event.getDonationAmount())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
@@ -169,11 +169,11 @@ public class ScarpetTwitchEvents extends Event {
         public void onTwitchEvent(String playerName, TwitchEvent event) {
             handler.call(
                     () -> Arrays.asList(
-                            ((c, t) -> new StringValue(playerName)),
-                            ((c, t) -> new StringValue(event.getNickname())),
-                            ((c, t) -> new StringValue(event.getMsg())),
-                            ((c, t) -> new ListValue(getBadges(event))),
-                            ((c, t) -> new NumericValue(event.getSubscriptionMonths()))
+                            new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new StringValue(event.getMsg()),
+                            new ListValue(getBadges(event)),
+                            new NumericValue(event.getSubscriptionMonths())
                     ),
                     () -> {
                         ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
