@@ -15,7 +15,6 @@ import java.util.Map;
 
 import carpet.CarpetExtension;
 import carpet.CarpetServer;
-import carpet.script.CarpetExpression;
 import carpet.script.CarpetScriptServer;
 import carpet.script.bundled.BundledModule;
 import it.multicoredev.sti.config.Config;
@@ -58,14 +57,14 @@ public class ScTwitch implements CarpetExtension {
             Path configDir = FabricLoader.getInstance().getConfigDir().normalize();
             Files.createDirectories(configDir);
             Path configFile = configDir.resolve("sctwitch.json").normalize();
-            System.out.println("File di config loaded from " + configFile);
             Config.load(configFile.toFile());
+            System.out.println("File di config loaded from " + configFile);
+            Config.getInstance().toFile(configFile.toFile());
             for (StreamerConfig s : Config.getInstance().STREAMERS) {
                 streamlabsSockets.put(s.TWITCH_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
                 twitchChatSockets.put(s.TWITCH_ACCOUNT, new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
                 System.out.println("Collegamento a " + s.TWITCH_ACCOUNT + " avvenuto con successo.");
             }
-            Config.getInstance().toFile(configFile.toFile());
         } catch (IOException e) {
             e.printStackTrace();
         }

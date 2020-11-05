@@ -15,7 +15,6 @@ import carpet.script.value.StringValue;
 import it.multicoredev.sti.twitch.TwitchEvent;
 
 public class ScarpetTwitchEvents extends Event {
-
     public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION = new ScarpetTwitchEvents("twitch_subscription", 8, false) {
         @Override
         public void onTwitchEvent(String playerName, TwitchEvent event) {
