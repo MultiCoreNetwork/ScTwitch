@@ -26,7 +26,7 @@ import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
 public class ScTwitch implements CarpetExtension {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
-    public static final String MOD_VERSION = "1.1.0";
+    public static final String MOD_VERSION = "1.4.24";
 
     private Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
     private Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
