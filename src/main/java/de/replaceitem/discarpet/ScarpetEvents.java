@@ -42,7 +42,7 @@ public class ScarpetEvents {
                         return Arrays.asList(
                                 new StringValue(message),
                                 new StringValue(type),
-                                e != null ? new EntityValue(e) : new NullValue()
+                                e != null ? new EntityValue(e) : NullValue.NULL
                         );
 
                     },

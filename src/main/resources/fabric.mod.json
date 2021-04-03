@@ -5,7 +5,7 @@
   "name": "ScTwitch",
   "description": "Scarpet Twitch Integration",
   "authors": [
-    "LoreSchaeffer","iMamoMC","BisUmTo","Gnottero","Gnembon", "iGoodie", "ReplaceItem"
+    "LoreSchaeffer","iMamoMC","BisUmTo","Gnottero","Gnembon", "iGoodie", "replaceitem"
   ],
   "contributors": [],
   "contact": {},
@@ -22,8 +22,8 @@
     "discarpet.mixins.json"
   ],
   "depends": {
-    "minecraft": "1.17.x",
+    "minecraft": "1.16.x",
     "fabricloader": ">=0.9.3",
-    "carpet": "1.4.24"
+    "carpet": ">=1.4.15"
   }
 }

@@ -1,5 +1,6 @@
 package it.multicoredev.sti;
 
+import it.multicoredev.sti.scarpet.ScarpetTwitchEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 
@@ -26,7 +27,7 @@ import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
 public class ScTwitch implements CarpetExtension {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
-    public static final String MOD_VERSION = "1.4.24";
+    public static final String MOD_VERSION = "1.4.30";
 
     private Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
     private Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
@@ -35,6 +36,7 @@ public class ScTwitch implements CarpetExtension {
         CarpetServer.manageExtension(new ScTwitch());
         CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("sctwitch_event_test", false));
         CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("chat_message_event_test", false));
+        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("twitch_spawn", false));
     }
 
     public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
@@ -84,9 +86,11 @@ public class ScTwitch implements CarpetExtension {
     public void onGameStarted() {
         createSockets();
         startSockets();
+        CarpetServer.settingsManager.parseSettingsClass(ScTwitchSettings.class);
     }
 
     public static void noop() {
+        ScarpetTwitchEvents.noop();
     }
 
     @Override

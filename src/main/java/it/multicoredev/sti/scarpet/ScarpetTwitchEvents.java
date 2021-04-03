@@ -153,4 +153,5 @@ public class ScarpetTwitchEvents extends Event {
 
     public void onTwitchEvent(String playerName, TwitchEvent event) {
     }
+    public static void noop() {}
 }
