@@ -1,6 +1,7 @@
 package it.multicoredev.sti;
 
 import it.multicoredev.sti.scarpet.ScarpetTwitchEvents;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 
@@ -24,7 +25,7 @@ import it.multicoredev.sti.twitch.TwitchEventHandler;
 import it.multicoredev.sti.twitch.chat.TwitchChatSocket;
 import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
 
-public class ScTwitch implements CarpetExtension {
+public class ScTwitch implements CarpetExtension, ModInitializer {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
     public static final String MOD_VERSION = "1.4.30";
@@ -89,10 +90,6 @@ public class ScTwitch implements CarpetExtension {
         CarpetServer.settingsManager.parseSettingsClass(ScTwitchSettings.class);
     }
 
-    public static void noop() {
-        ScarpetTwitchEvents.noop();
-    }
-
     @Override
     public void onReload(MinecraftServer server) {
         stopSockets();
@@ -103,5 +100,10 @@ public class ScTwitch implements CarpetExtension {
     @Override
     public void onServerClosed(MinecraftServer server) {
         stopSockets();
+    }
+
+    @Override
+    public void onInitialize() {
+        ScarpetTwitchEvents.noop();
     }
 }
