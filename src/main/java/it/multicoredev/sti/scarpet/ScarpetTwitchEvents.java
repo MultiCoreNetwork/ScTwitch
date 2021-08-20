@@ -1,5 +1,6 @@
 package it.multicoredev.sti.scarpet;
 
+import carpet.script.value.*;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Arrays;
@@ -8,10 +9,6 @@ import java.util.Set;
 
 import carpet.CarpetServer;
 import carpet.script.CarpetEventServer.Event;
-import carpet.script.value.EntityValue;
-import carpet.script.value.ListValue;
-import carpet.script.value.NumericValue;
-import carpet.script.value.StringValue;
 import it.multicoredev.sti.twitch.TwitchEvent;
 
 public class ScarpetTwitchEvents extends Event {
@@ -26,9 +23,9 @@ public class ScarpetTwitchEvents extends Event {
                             new StringValue(event.getMsg()),
                             new NumericValue(event.getSubscriptionTier()),
                             new NumericValue(event.getSubscriptionMonths()),
-                            new NumericValue(event.isResubbed()),
+                            BooleanValue.of(event.isResubbed()),
                             new NumericValue(event.getSubscriptionStreakMonths()),
-                            new NumericValue(event.isGifted())
+                            BooleanValue.of(event.isGifted())
                     ),
                     () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
