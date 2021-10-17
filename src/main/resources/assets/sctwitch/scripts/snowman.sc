@@ -54,11 +54,11 @@ __on_youtube_follow(player, actor) -> (
 
 __on_twitch_subscription(player, actor, message, tier, months, resubbed, streak, gifted, gifter) ->
 if( !gifted,
-        loop(tier, _spawn_snowgolem(actor, null, null));
-        run('title @a subtitle {"text":"Sub su Twitch!",color":"#9147ff"}'),
+        loop(max(tier,1), _spawn_snowgolem(actor, null, null));
+        run('title @a subtitle {"text":"Sub su Twitch!","color":"#9147ff"}'),
     global_gifted,
         loop(tier, _spawn_snowgolem(gifter, null, null));
-        run('title @a subtitle {"text":"Sub su Twitch!",color":"#9147ff"}');
+        run('title @a subtitle {"text":"Donatore sub su Twitch!","color":"#9147ff"}');
 );
 
 __on_twitch_chat_message(player, actor, message, badges, subscriptionMonths) ->

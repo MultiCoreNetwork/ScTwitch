@@ -44,7 +44,7 @@ public class StreamlabsEvent {
     private int subscriptionTier = -1;
     private boolean gifted;
     private String gifter;
-    private boolean resubbed;
+    private Boolean resubbed;
 
     private int viewerCount;
     private int raiderCount;
@@ -177,11 +177,11 @@ public class StreamlabsEvent {
         this.subscriptionStreakMonths = subscriptionStreakMonths;
     }
 
-    public boolean isResubbed() {
+    public Boolean isResubbed() {
         return resubbed;
     }
 
-    public void setResubbed(boolean resubbed) {
+    public void setResubbed(Boolean resubbed) {
         this.resubbed = resubbed;
     }
 

@@ -68,9 +68,9 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
             System.out.println("File di config loaded from " + configFile);
             Config.getInstance().toFile(configFile.toFile());
             for (StreamerConfig s : Config.getInstance().STREAMERS) {
-                streamlabsSockets.put(s.TWITCH_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new StreamlabsEventHandler(s.MINECRAFT_ACCOUNT)));
-                twitchChatSockets.put(s.TWITCH_ACCOUNT, new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
-                System.out.println("Collegamento a " + s.TWITCH_ACCOUNT + " avvenuto con successo.");
+                streamlabsSockets.put(s.STREAMLABS_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new StreamlabsEventHandler(s.MINECRAFT_ACCOUNT)));
+                twitchChatSockets.put(s.STREAMLABS_ACCOUNT, new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
+                System.out.println("Collegamento a " + s.STREAMLABS_ACCOUNT + " avvenuto con successo.");
             }
         } catch (IOException e) {
             e.printStackTrace();
