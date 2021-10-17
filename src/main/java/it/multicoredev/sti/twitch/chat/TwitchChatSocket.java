@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.regex.Pattern;
 
-import it.multicoredev.sti.twitch.TwitchEvent;
+import it.multicoredev.sti.twitch.streamlabs.StreamlabsEvent;
 import it.multicoredev.sti.twitch.TwitchEventHandler;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -131,7 +131,7 @@ public class TwitchChatSocket {
             }
         } else if (TwitchChatMessage.matches(response)) {
             TwitchChatMessage twitchChatMessage = new TwitchChatMessage(response);
-            TwitchEvent event = new TwitchEvent("chatMessage", channel);
+            StreamlabsEvent event = new StreamlabsEvent("chatMessage", channel);
             event.setMsg(twitchChatMessage.message);
             event.setNickname(twitchChatMessage.username);
             event.setBadges(twitchChatMessage.badges);

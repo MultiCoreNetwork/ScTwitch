@@ -1,3 +1,16 @@
+// STREAMLABS //
+__on_streamlabs_donation(player, actor, message, amount, formattedAmount, currency) -> (
+    print('');
+    print('__on_streamlabs_donation(player, actor, message, amount, formattedAmount, currency)');
+    print('  - player: ' + player);
+    print('  - actor: ' + actor);
+    print('  - message: ' + message);
+    print('  - amount: ' + amount);
+    print('  - formattedAmount: ' + formattedAmount);
+    print('  - currency: ' + currency)
+);
+
+// TWITCH //
 __on_twitch_follow(player, actor) -> (
     print('');
     print('__on_twitch_follow(player, actor)');
@@ -5,9 +18,9 @@ __on_twitch_follow(player, actor) -> (
     print('  - actor: ' + actor)
 );
 
-__on_twitch_subscription(player, actor, message, tier, months, resubbed, streak, gifted) -> (
+__on_twitch_subscription(player, actor, message, tier, months, resubbed, streak, gifted, gifter) -> (
     print('');
-    print('__on_twitch_subscription(player, actor, message, tier, months, resubbed, streak, gifted)');
+    print('__on_twitch_subscription(player, actor, message, tier, months, resubbed, streak, gifted, gifter)');
     print('  - player: ' + player);
     print('  - actor: ' + actor);
     print('  - message: ' + message);
@@ -15,27 +28,8 @@ __on_twitch_subscription(player, actor, message, tier, months, resubbed, streak,
     print('  - months: ' + months);
     print('  - resubbed: ' + if(resubbed,'true','false'));
     print('  - streak: ' + streak);
-    print('  - gifted: ' + if(gifted,'true','false'))
-);
-
-__on_twitch_subscription_gift(player, actor, tier, amount) -> (
-    print('');
-    print('__on_twitch_subscription_gift(player, actor, message, amount)');
-    print('  - player: ' + player);
-    print('  - actor: ' + actor);
-    print('  - tier: ' + tier);
-    print('  - amount: ' + amount)
-);
-
-__on_twitch_donation(player, actor, message, amount, formattedAmount, currency) -> (
-    print('');
-    print('__on_twitch_donation(player, actor, message, amount, formattedAmount, currency)');
-    print('  - player: ' + player);
-    print('  - actor: ' + actor);
-    print('  - message: ' + message);
-    print('  - amount: ' + amount);
-    print('  - formattedAmount: ' + formattedAmount);
-    print('  - currency: ' + currency)
+    print('  - gifted: ' + if(gifted,'true','false'));
+    print('  - gifter: ' + gifter)
 );
 
 __on_twitch_bits(player, actor, message, amount) -> (
@@ -71,4 +65,31 @@ __on_twitch_chat_message(player, actor, message, badges, subscriptionMonths) -> 
     print('  - message: ' + message);
     print('  - badges: ' + badges);
     print('  - subscriptionMonths: ' + subscriptionMonths)
-)
+);
+
+// YOUTUBE //
+__on_youtube_follow(player, actor) -> (
+    print('');
+    print('__on_youtube_follow(player, actor)');
+    print('  - player: ' + player);
+    print('  - actor: ' + actor)
+);
+
+__on_youtube_subscription(player, actor, months) -> (
+    print('');
+    print('__on_youtube_subscription(player, actor, months)');
+    print('  - player: ' + player);
+    print('  - actor: ' + actor);
+    print('  - months: ' + months);
+);
+
+__on_youtube_superchat(player, actor, message, amount, formattedAmount, currency) -> (
+    print('');
+    print('__on_youtube_superchat(player, actor, message, amount, formattedAmount, currency)');
+    print('  - player: ' + player);
+    print('  - actor: ' + actor);
+    print('  - message: ' + message);
+    print('  - amount: ' + amount);
+    print('  - formattedAmount: ' + formattedAmount);
+    print('  - currency: ' + currency)
+);

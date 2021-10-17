@@ -9,12 +9,12 @@ import java.util.Set;
 
 import carpet.CarpetServer;
 import carpet.script.CarpetEventServer.Event;
-import it.multicoredev.sti.twitch.TwitchEvent;
+import it.multicoredev.sti.twitch.streamlabs.StreamlabsEvent;
 
 public class ScarpetTwitchEvents extends Event {
-    public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION = new ScarpetTwitchEvents("twitch_subscription", 8, false) {
+    public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION = new ScarpetTwitchEvents("twitch_subscription", 9, false) {
         @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
             ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
@@ -25,32 +25,17 @@ public class ScarpetTwitchEvents extends Event {
                             new NumericValue(event.getSubscriptionMonths()),
                             BooleanValue.of(event.isResubbed()),
                             new NumericValue(event.getSubscriptionStreakMonths()),
-                            BooleanValue.of(event.isGifted())
+                            BooleanValue.of(event.isGifted()),
+                            new StringValue(event.getGifter())
                     ),
                     () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
             );
         }
     };
-    public static ScarpetTwitchEvents TWITCH_DONATION = new ScarpetTwitchEvents("twitch_donation", 6, false) {
-        @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
-            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-            handler.call(
-                    () -> Arrays.asList(
-                            player != null ? new EntityValue(player) : new StringValue(playerName),
-                            new StringValue(event.getNickname()),
-                            new StringValue(event.getMsg()),
-                            new NumericValue(event.getDonationAmount()),
-                            new StringValue(event.getFormattedAmount()),
-                            new StringValue(event.getDonationCurrency())
-                    ),
-                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
-            );
-        }
-    };
+
     public static ScarpetTwitchEvents TWITCH_FOLLOW = new ScarpetTwitchEvents("twitch_follow", 2, false) {
         @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
             ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
@@ -63,7 +48,7 @@ public class ScarpetTwitchEvents extends Event {
     };
     public static ScarpetTwitchEvents TWITCH_BITS = new ScarpetTwitchEvents("twitch_bits", 4, false) {
         @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
             ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
@@ -78,7 +63,7 @@ public class ScarpetTwitchEvents extends Event {
     };
     public static ScarpetTwitchEvents TWITCH_RAID = new ScarpetTwitchEvents("twitch_raid", 3, false) {
         @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
             ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
@@ -92,7 +77,7 @@ public class ScarpetTwitchEvents extends Event {
     };
     public static ScarpetTwitchEvents TWITCH_HOST = new ScarpetTwitchEvents("twitch_host", 3, false) {
         @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
             ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
@@ -104,24 +89,9 @@ public class ScarpetTwitchEvents extends Event {
             );
         }
     };
-    public static ScarpetTwitchEvents TWITCH_SUBSCRIPTION_GIFT = new ScarpetTwitchEvents("twitch_subscription_gift", 4, false) {
-        @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
-            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
-            handler.call(
-                    () -> Arrays.asList(
-                            player != null ? new EntityValue(player) : new StringValue(playerName),
-                            new StringValue(event.getNickname()),
-                            new NumericValue(event.getSubscriptionTier()),
-                            new NumericValue(event.getDonationAmount())
-                    ),
-                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
-            );
-        }
-    };
     public static ScarpetTwitchEvents TWITCH_CHAT_MESSAGE = new ScarpetTwitchEvents("twitch_chat_message", 5, false) {
         @Override
-        public void onTwitchEvent(String playerName, TwitchEvent event) {
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
             ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
             handler.call(
                     () -> Arrays.asList(
@@ -135,7 +105,7 @@ public class ScarpetTwitchEvents extends Event {
             );
         }
 
-        private Set<StringValue> getBadges(TwitchEvent event) {
+        private Set<StringValue> getBadges(StreamlabsEvent event) {
             Set<StringValue> badges = new HashSet<>();
             for (String b : event.getBadges()) {
                 badges.add(new StringValue(b));
@@ -148,7 +118,7 @@ public class ScarpetTwitchEvents extends Event {
         super(name, reqArgs, isGlobalOnly);
     }
 
-    public void onTwitchEvent(String playerName, TwitchEvent event) {
+    public void onTwitchEvent(String playerName, StreamlabsEvent event) {
     }
     public static void noop() {}
 }

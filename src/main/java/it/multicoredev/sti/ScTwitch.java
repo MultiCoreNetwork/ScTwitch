@@ -1,6 +1,9 @@
 package it.multicoredev.sti;
 
 import it.multicoredev.sti.scarpet.ScarpetTwitchEvents;
+import it.multicoredev.sti.scarpet.ScarpetYouTubeEvents;
+import it.multicoredev.sti.twitch.TwitchEventHandler;
+import it.multicoredev.sti.twitch.streamlabs.StreamlabsEventHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
@@ -21,14 +24,14 @@ import carpet.script.CarpetScriptServer;
 import carpet.script.bundled.BundledModule;
 import it.multicoredev.sti.config.Config;
 import it.multicoredev.sti.config.StreamerConfig;
-import it.multicoredev.sti.twitch.TwitchEventHandler;
 import it.multicoredev.sti.twitch.chat.TwitchChatSocket;
 import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
 
 public class ScTwitch implements CarpetExtension, ModInitializer {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
-    public static final String MOD_VERSION = "1.4.30";
+    public static final String MOD_VERSION = "1.4.48";
+    public static final boolean DEBUG = false;
 
     private Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
     private Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
@@ -64,7 +67,7 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
             System.out.println("File di config loaded from " + configFile);
             Config.getInstance().toFile(configFile.toFile());
             for (StreamerConfig s : Config.getInstance().STREAMERS) {
-                streamlabsSockets.put(s.TWITCH_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
+                streamlabsSockets.put(s.TWITCH_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new StreamlabsEventHandler(s.MINECRAFT_ACCOUNT)));
                 twitchChatSockets.put(s.TWITCH_ACCOUNT, new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
                 System.out.println("Collegamento a " + s.TWITCH_ACCOUNT + " avvenuto con successo.");
             }
@@ -105,5 +108,6 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
     @Override
     public void onInitialize() {
         ScarpetTwitchEvents.noop();
+        ScarpetYouTubeEvents.noop();
     }
 }

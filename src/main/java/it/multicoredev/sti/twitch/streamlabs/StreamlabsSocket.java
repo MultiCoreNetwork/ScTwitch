@@ -1,6 +1,7 @@
 package it.multicoredev.sti.twitch.streamlabs;
 
 
+import it.multicoredev.sti.ScTwitch;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,8 +12,6 @@ import java.util.function.Consumer;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import it.multicoredev.sti.twitch.TwitchEvent;
-import it.multicoredev.sti.twitch.TwitchEventHandler;
 
 /**
  * Copyright © 2020 by Lorenzo Magni
@@ -41,10 +40,10 @@ public class StreamlabsSocket {
     private Thread thread;
     private final String token;
     private Socket socket;
-    private TwitchEventHandler handler;
+    private StreamlabsEventHandler handler;
     private boolean connected = false;
 
-    public StreamlabsSocket(String token, TwitchEventHandler handler) throws IOException {
+    public StreamlabsSocket(String token, StreamlabsEventHandler handler) throws IOException {
         this.token = token;
         this.handler = handler;
 
@@ -108,24 +107,37 @@ public class StreamlabsSocket {
         String eventAccount = eventFor.replace("_account", "");
 
         forEach(msgs, message -> {
-            System.out.println(eventType + ": " + message);
-            TwitchEvent event = new TwitchEvent(eventType, eventAccount);
-            event.setNickname(extractFrom(message, "name", String.class, null));
-            event.setMsg(extractFrom(message, "message", String.class, null));
+            if(ScTwitch.DEBUG) System.out.println(eventType + ": " + message);
+            StreamlabsEvent event = new StreamlabsEvent(eventType, eventAccount);
+
+            String nickname = extractFrom(message, "display_name", String.class, null);
+            if(nickname != null) event.setNickname(nickname);
+            else event.setNickname(extractFrom(message, "name", String.class, null));
+
+            String comment = extractFrom(message, "comment", String.class, null);
+            if(comment != null) event.setMsg(comment);
+            else event.setMsg(extractFrom(message, "message", String.class, null));
+
+            String formattedAmount = extractFrom(message, "displayString", String.class, null);
+            if(formattedAmount != null) event.setFormattedAmount(formattedAmount);
+            else event.setFormattedAmount(extractFrom(message, "formatted_amount", String.class, null));
+
+            String gifter = extractFrom(message, "gifter_display_name", String.class, null);
+            if(gifter != null) event.setGifter(gifter);
+            else event.setGifter(extractFrom(message, "gifter", String.class, null));
+
             event.setDonationAmount(extractNumberFrom(message, "amount", 0.0).doubleValue());
-            event.setFormattedAmount(extractFrom(message, "formatted_amount", String.class, null));
             event.setDonationCurrency(extractFrom(message, "currency", String.class, null));
             event.setSubscriptionMonths(extractNumberFrom(message, "months", 0).intValue());
             event.setRaiderCount(extractNumberFrom(message, "raiders", 0).intValue());
             event.setViewerCount(extractNumberFrom(message, "viewers", 0).intValue());
             event.setSubscriptionTier(extractTier(message, "sub_plan"));
             event.setSubscriptionStreakMonths(extractNumberFrom(message, "streak_months", 0).intValue());
-            event.setGifted(extractFrom(message, "gifter_twitch_id", String.class, null) != null);
-            event.setResubbed(eventType.equals("resub"));
-
+            event.setGifted(extractFrom(message, "gifter", String.class, null) != null);
+            event.setResubbed(extractFrom(message, "repeat", Boolean.class, null));
 
             try {
-                handler.handleTwitchEvent(event);
+                handler.handleStramlabsEvent(event);
             } catch (Exception e) {
                 e.printStackTrace();
             }

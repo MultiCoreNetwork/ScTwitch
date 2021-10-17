@@ -30,7 +30,10 @@ public class Config {
         // config.json enthalten ist.
         this.STREAMERS = new ArrayList<>();
         this.STREAMERS.add(
-                new StreamerConfig("Your Twitch Name",
+                new StreamerConfig(
+                        "Your Streamlabs Name",
+                        "Your Twitch Name",
+                        "Your YouTube Name",
                         "Your Minecraft Nickname",
                         "Your Streamlabs Socket API Token - https://streamlabs.com/dashboard#/settings/api-settings",
                         "Your Twitch Chat Token - https://twitchapps.com/tmi/")

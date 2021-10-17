@@ -1,4 +1,4 @@
-package it.multicoredev.sti.twitch;
+package it.multicoredev.sti.twitch.streamlabs;
 
 import com.google.common.base.Defaults;
 
@@ -27,7 +27,7 @@ import java.util.Set;
  * THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class TwitchEvent {
+public class StreamlabsEvent {
     private final String type;
     private final String account;
 
@@ -43,6 +43,7 @@ public class TwitchEvent {
     private int subscriptionStreakMonths;
     private int subscriptionTier = -1;
     private boolean gifted;
+    private String gifter;
     private boolean resubbed;
 
     private int viewerCount;
@@ -52,7 +53,7 @@ public class TwitchEvent {
     public String rewardTitle;
     public Set<String> chatBadges = new HashSet<>();
 
-    public TwitchEvent(String type, String account) {
+    public StreamlabsEvent(String type, String account) {
         this.type = type;
         this.account = account;
     }
@@ -198,5 +199,13 @@ public class TwitchEvent {
 
     public void setBadges(Set<String> badges) {
         this.badges = badges;
+    }
+
+    public String getGifter() {
+        return gifter;
+    }
+
+    public void setGifter(String gifter) {
+        this.gifter = gifter;
     }
 }
