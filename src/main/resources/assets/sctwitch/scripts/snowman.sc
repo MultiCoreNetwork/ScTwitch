@@ -33,7 +33,7 @@ if( !global_stop,
     global_snowman:actor += 1;
     write_file('snowman', 'json',global_snowman);
 
-    run(src('title @a title {"text":"%s","color":"%s"}', actor, color));
+    run(str('title @a title {"text":"%s","color":"%s"}', actor, color));
 
     spawn('snow_golem', pos, str('{CustomName:\'{"text":"%s","color":"%s"}\'}',
         actor,

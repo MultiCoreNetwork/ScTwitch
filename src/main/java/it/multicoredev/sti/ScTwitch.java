@@ -40,7 +40,8 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
         CarpetServer.manageExtension(new ScTwitch());
         CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("sctwitch_event_test", false));
         CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("chat_message_event_test", false));
-        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("twitch_spawn", false));
+        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("sapling", false));
+        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("snowman", false));
     }
 
     public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
