@@ -134,7 +134,7 @@ public class StreamlabsSocket {
             event.setSubscriptionTier(extractTier(message, "sub_plan"));
             event.setSubscriptionStreakMonths(extractNumberFrom(message, "streak_months", 0).intValue());
             event.setGifted(!extractFrom(message, "gifter", String.class, "").equals(""));
-            event.setResubbed(extractBooleanFrom(message, "repeat", null));
+            event.setResubbed(extractBooleanFrom(message, "repeat", false));
 
             try {
                 handler.handleStramlabsEvent(event);
@@ -190,7 +190,7 @@ public class StreamlabsSocket {
         }
     }
 
-    private Boolean extractBooleanFrom(JSONObject json, String key, Boolean defaultValue) {
+    private boolean extractBooleanFrom(JSONObject json, String key, boolean defaultValue) {
         try {
             return json.getBoolean(key);
         } catch (Exception e) {

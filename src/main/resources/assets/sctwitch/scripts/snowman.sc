@@ -1,4 +1,5 @@
 __config()->{
+	'scope' -> 'global',
     'commands' -> {
         'stop' -> _() -> global_stop = true,
         'start' -> _() -> global_stop = false,
@@ -34,6 +35,7 @@ if( !global_stop,
     write_file('snowman', 'json',global_snowman);
 
     run(str('title @a title {"text":"%s","color":"%s"}', actor, color));
+	run('playsound minecraft:entity.item.pickup ambient @a');
 
     spawn('snow_golem', pos, str('{CustomName:\'{"text":"%s","color":"%s"}\'}',
         actor,
@@ -42,11 +44,13 @@ if( !global_stop,
 );
 
 // EVENTS
-__on_twitch_follow(player, actor) -> (
+__on_twitch_follow(player, actor) -> 
+if(!global_snowman:actor,
     _spawn_snowgolem(actor, null, null);
     run('title @a subtitle {"text":"Follow su Twitch!","color":"#9147ff"}');
 );
-__on_youtube_follow(player, actor) -> (
+__on_youtube_follow(player, actor) -> 
+if(!global_snowman:actor,
     _spawn_snowgolem(actor, null, null);
     run('title @a subtitle {"text":"Iscritto su YouTube!","color":"#ff0000"}');
 );
@@ -63,7 +67,8 @@ if( !gifted,
 
 __on_twitch_chat_message(player, actor, message, badges, subscriptionMonths) ->
 if(global_command && message == '!snowman' && !global_snowman:actor,
-    _spawn_snowgolem(actor, null, null)
+    _spawn_snowgolem(actor, null, null);
+	run('title @a subtitle {"text":"Comando in chat!","color":"#9147ff"}');
 );
 
 // GLOBALI UTILI
