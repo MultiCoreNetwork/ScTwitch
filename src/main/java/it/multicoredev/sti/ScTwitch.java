@@ -31,7 +31,7 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
     public static final String MOD_VERSION = "1.4.51";
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     static {
         CarpetServer.manageExtension(new ScTwitch());
