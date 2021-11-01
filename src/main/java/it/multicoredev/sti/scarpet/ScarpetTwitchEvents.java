@@ -113,6 +113,31 @@ public class ScarpetTwitchEvents extends Event {
             return badges;
         }
     };
+    public static ScarpetTwitchEvents TWITCH_CUSTOM_REWARD = new ScarpetTwitchEvents("twitch_custom_reward", 6, false) {
+        @Override
+        public void onTwitchEvent(String playerName, StreamlabsEvent event) {
+            ServerPlayerEntity player = CarpetServer.minecraft_server.getPlayerManager().getPlayer(playerName);
+            handler.call(
+                    () -> Arrays.asList(
+                            player != null ? new EntityValue(player) : new StringValue(playerName),
+                            new StringValue(event.getNickname()),
+                            new StringValue(event.getMsg()),
+                            new ListValue(getBadges(event)),
+                            new NumericValue(event.getSubscriptionMonths()),
+                            new StringValue(event.getCustomRewardId())
+                    ),
+                    () -> player != null ? player.getCommandSource() : CarpetServer.minecraft_server.getCommandSource()
+            );
+        }
+
+        private Set<StringValue> getBadges(StreamlabsEvent event) {
+            Set<StringValue> badges = new HashSet<>();
+            for (String b : event.getBadges()) {
+                badges.add(new StringValue(b));
+            }
+            return badges;
+        }
+    };
 
     public ScarpetTwitchEvents(String name, int reqArgs, boolean isGlobalOnly) {
         super(name, reqArgs, isGlobalOnly);

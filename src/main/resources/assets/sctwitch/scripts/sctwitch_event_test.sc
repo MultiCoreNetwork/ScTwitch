@@ -67,6 +67,17 @@ __on_twitch_chat_message(player, actor, message, badges, subscriptionMonths) -> 
     print('  - subscriptionMonths: ' + subscriptionMonths)
 );
 
+__on_twitch_custom_reward(player, actor, message, badges, subscriptionMonths, customRewardId) -> (
+    print('');
+    print('__on_twitch_custom_reward(player, actor, message, badges, subscriptionMonths, customRewardId)');
+    print('  - player: ' + player);
+    print('  - actor: ' + actor);
+    print('  - message: ' + message);
+    print('  - badges: ' + badges);
+    print('  - subscriptionMonths: ' + subscriptionMonths);
+    print('  - customRewardId: ' + customRewardId)
+);
+
 // YOUTUBE //
 __on_youtube_follow(player, actor) -> (
     print('');

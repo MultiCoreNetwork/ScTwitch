@@ -14,28 +14,29 @@ import java.util.stream.Stream;
  * TwitchSpawn is under "Eclipse Public License - v 1.0", you can find a copy <a href="https://www.eclipse.org/org/documents/epl-v10.html">here</a>.
  */
 
-public class TwitchChatMessage {
+public class TwitchCustomReward {
 
-    public static final Pattern TWITCH_CHAT_PATTERN = Pattern.compile("^@?(?<tags>.*?) ?(:(?<user>.*?)!.*?\\.tmi\\.twitch\\.tv) PRIVMSG #(?<channel>.*?) :(?<msg>.*)$");
+    public static final Pattern TWITCH_CUSTOM_REWARD_PATTERN = Pattern.compile("^@?(?<tags>.*?custom-reward-id=(?<cri>.*?);.*?) ?(:(?<user>.*?)!.*?\\.tmi\\.twitch\\.tv) PRIVMSG #(?<channel>.*?) :(?<msg>.*)$");
 
     private String raw;
 
     public String username;
     public String message;
+    public String customRewardId;
     public Set<String> badges; // admin, bits, broadcaster, global_mod, moderator, subscriber, staff, turbo, vip, glhf-pledge
     public int subscriptionMonths;
 
-    public TwitchChatMessage(String raw) {
+    public TwitchCustomReward(String raw) {
         this.raw = raw;
         this.badges = new HashSet<>();
 
-        Matcher matcher = TWITCH_CHAT_PATTERN.matcher(raw);
+        Matcher customRewardMatcher = TWITCH_CUSTOM_REWARD_PATTERN.matcher(raw);
 
-        if (matcher.matches()) {
-            Map<String, String> tags = parseTags(matcher.group("tags"));
+        if (customRewardMatcher.matches()) {
+            Map<String, String> tags = parseTags(customRewardMatcher.group("tags"));
 
             String displayName = tags.getOrDefault("display-name", "");
-            this.username = displayName.isEmpty() ? matcher.group("user") : displayName;
+            this.username = displayName.isEmpty() ? customRewardMatcher.group("user") : displayName;
 
             Stream.of(tags.getOrDefault("badges", "").split(",")).forEach(badgeRaw -> {
                 if (badgeRaw.isEmpty()) return;
@@ -54,7 +55,8 @@ public class TwitchChatMessage {
                     subscriptionMonths = Integer.parseInt(infoValue);
             });
 
-            this.message = matcher.group("msg");
+            this.message = customRewardMatcher.group("msg");
+            this.customRewardId = customRewardMatcher.group("cri");
         }
     }
 
@@ -69,9 +71,8 @@ public class TwitchChatMessage {
         return tags;
     }
 
-    public static boolean matchesMessage(String raw) {
-        return TWITCH_CHAT_PATTERN.matcher(raw).matches();
+    public static boolean matchesCustomReward(String raw) {
+        return TWITCH_CUSTOM_REWARD_PATTERN.matcher(raw).matches();
     }
-
 
 }

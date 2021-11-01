@@ -49,7 +49,7 @@ public class StreamlabsEvent {
     private int viewerCount;
     private int raiderCount;
 
-    public int rewardID;
+    public String customRewardId;
     public String rewardTitle;
     public Set<String> chatBadges = new HashSet<>();
 
@@ -207,5 +207,12 @@ public class StreamlabsEvent {
 
     public void setGifter(String gifter) {
         this.gifter = gifter;
+    }
+
+    public void setCustomRewardId(String customRewardId) {
+        this.customRewardId = customRewardId;
+    }
+    public String getCustomRewardId() {
+        return this.customRewardId;
     }
 }

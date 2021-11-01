@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.regex.Pattern;
 
+import it.multicoredev.sti.ScTwitch;
 import it.multicoredev.sti.twitch.streamlabs.StreamlabsEvent;
 import it.multicoredev.sti.twitch.TwitchEventHandler;
 
@@ -37,6 +38,11 @@ public class TwitchChatSocket {
     private static final String MSG_PATTERN = "^:\\w+!\\w+@\\w+\\.tmi\\.twitch\\.tv PRIVMSG #\\w+ :";
     private static final String SOCKET_ADDRESS = "irc.chat.twitch.tv";
     private static final int SOCKET_PORT = 6667;
+
+    public String getChannel() {
+        return channel;
+    }
+
     private final String channel;
 
     private TwitchEventHandler handler;
@@ -129,15 +135,28 @@ public class TwitchChatSocket {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if (TwitchChatMessage.matches(response)) {
-            TwitchChatMessage twitchChatMessage = new TwitchChatMessage(response);
-            StreamlabsEvent event = new StreamlabsEvent("chatMessage", channel);
-            event.setMsg(twitchChatMessage.message);
-            event.setNickname(twitchChatMessage.username);
-            event.setBadges(twitchChatMessage.badges);
-            event.setSubscriptionMonths(twitchChatMessage.subscriptionMonths);
-            handler.handleTwitchEvent(event);
-            //System.out.println(twitchChatMessage.username + " " + twitchChatMessage.message);
+        } else {
+            if (TwitchCustomReward.matchesCustomReward(response)) {
+                if (ScTwitch.DEBUG) System.out.println("customReward: " + response);
+                TwitchCustomReward twitchCustomReward = new TwitchCustomReward(response);
+                StreamlabsEvent event = new StreamlabsEvent("customReward", channel);
+                event.setMsg(twitchCustomReward.message);
+                event.setNickname(twitchCustomReward.username);
+                event.setBadges(twitchCustomReward.badges);
+                event.setCustomRewardId(twitchCustomReward.customRewardId);
+                event.setSubscriptionMonths(twitchCustomReward.subscriptionMonths);
+                handler.handleTwitchEvent(event);
+            } // else -> Esclusive "customReward" event
+            if (TwitchChatMessage.matchesMessage(response)) {
+                if (ScTwitch.DEBUG) System.out.println("chatMessage: " + response);
+                TwitchChatMessage twitchChatMessage = new TwitchChatMessage(response);
+                StreamlabsEvent event = new StreamlabsEvent("chatMessage", channel);
+                event.setMsg(twitchChatMessage.message);
+                event.setNickname(twitchChatMessage.username);
+                event.setBadges(twitchChatMessage.badges);
+                event.setSubscriptionMonths(twitchChatMessage.subscriptionMonths);
+                handler.handleTwitchEvent(event);
+            }
         }
     }
 }

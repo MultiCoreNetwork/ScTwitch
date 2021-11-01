@@ -1,13 +1,22 @@
 package it.multicoredev.sti;
 
+import carpet.CarpetExtension;
+import carpet.CarpetServer;
+import carpet.script.CarpetExpression;
+import carpet.script.CarpetScriptServer;
+import carpet.script.bundled.BundledModule;
+import it.multicoredev.sti.config.Config;
+import it.multicoredev.sti.config.StreamerConfig;
 import it.multicoredev.sti.scarpet.ScarpetTwitchEvents;
+import it.multicoredev.sti.scarpet.ScarpetTwitchFunctions;
 import it.multicoredev.sti.scarpet.ScarpetYouTubeEvents;
 import it.multicoredev.sti.twitch.TwitchEventHandler;
+import it.multicoredev.sti.twitch.chat.TwitchChatSocket;
 import it.multicoredev.sti.twitch.streamlabs.StreamlabsEventHandler;
+import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
-
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
@@ -18,23 +27,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import carpet.CarpetExtension;
-import carpet.CarpetServer;
-import carpet.script.CarpetScriptServer;
-import carpet.script.bundled.BundledModule;
-import it.multicoredev.sti.config.Config;
-import it.multicoredev.sti.config.StreamerConfig;
-import it.multicoredev.sti.twitch.chat.TwitchChatSocket;
-import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
-
 public class ScTwitch implements CarpetExtension, ModInitializer {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
-    public static final String MOD_VERSION = "1.4.48";
-    public static final boolean DEBUG = false;
-
-    private Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
-    private Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
+    public static final String MOD_VERSION = "1.4.51";
+    public static final boolean DEBUG = true;
 
     static {
         CarpetServer.manageExtension(new ScTwitch());
@@ -43,6 +40,9 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
         CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("sapling", false));
         CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("snowman", false));
     }
+
+    public static Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
+    public static Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
 
     public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
         BundledModule module = new BundledModule(scriptName.toLowerCase(Locale.ROOT), null, false);
@@ -110,5 +110,10 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
     public void onInitialize() {
         ScarpetTwitchEvents.noop();
         ScarpetYouTubeEvents.noop();
+    }
+
+    @Override
+    public void scarpetApi(CarpetExpression expression) {
+        ScarpetTwitchFunctions.apply(expression.getExpr());
     }
 }

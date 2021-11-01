@@ -23,6 +23,8 @@ public class TwitchEventHandler {
             ScarpetTwitchEvents.TWITCH_RAID.onTwitchEvent(nickname, event);
         } else if (event.getType().equals("chatMessage")) {
             ScarpetTwitchEvents.TWITCH_CHAT_MESSAGE.onTwitchEvent(nickname, event);
+        } else if (event.getType().equals("customReward")) {
+            ScarpetTwitchEvents.TWITCH_CUSTOM_REWARD.onTwitchEvent(nickname, event);
         }
     }
 
