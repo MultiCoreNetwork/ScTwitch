@@ -10,6 +10,18 @@ __on_streamlabs_donation(player, actor, message, amount, formattedAmount, curren
     print('  - currency: ' + currency)
 );
 
+// STREAMELEMENTS //
+__on_streamelements_donation(player, actor, message, amount, formattedAmount, currency) -> (
+    print('');
+    print('__on_streamelements_donation(player, actor, message, amount, formattedAmount, currency)');
+    print('  - player: ' + player);
+    print('  - actor: ' + actor);
+    print('  - message: ' + message);
+    print('  - amount: ' + amount);
+    print('  - formattedAmount: ' + formattedAmount);
+    print('  - currency: ' + currency)
+);
+
 // TWITCH //
 __on_twitch_follow(player, actor) -> (
     print('');

@@ -12,6 +12,8 @@ import it.multicoredev.sti.scarpet.ScarpetTwitchFunctions;
 import it.multicoredev.sti.scarpet.ScarpetYouTubeEvents;
 import it.multicoredev.sti.twitch.TwitchEventHandler;
 import it.multicoredev.sti.twitch.chat.TwitchChatSocket;
+import it.multicoredev.sti.twitch.streamelements.StreamelementsEventHandler;
+import it.multicoredev.sti.twitch.streamelements.StreamelementsSocket;
 import it.multicoredev.sti.twitch.streamlabs.StreamlabsEventHandler;
 import it.multicoredev.sti.twitch.streamlabs.StreamlabsSocket;
 import net.fabricmc.api.ModInitializer;
@@ -30,8 +32,8 @@ import java.util.Map;
 public class ScTwitch implements CarpetExtension, ModInitializer {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
-    public static final String MOD_VERSION = "1.4.51";
-    public static final boolean DEBUG = false;
+    public static final String MOD_VERSION = "1.4.57";
+    public static final boolean DEBUG = true;
 
     static {
         CarpetServer.manageExtension(new ScTwitch());
@@ -42,6 +44,7 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
     }
 
     public static Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
+    public static Map<String, StreamelementsSocket> streamelementsSockets = new HashMap<>();
     public static Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
 
     public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
@@ -59,6 +62,7 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
 
     public void createSockets() {
         try {
+            streamelementsSockets.clear();
             streamlabsSockets.clear();
             twitchChatSockets.clear();
             Path configDir = FabricLoader.getInstance().getConfigDir().normalize();
@@ -68,6 +72,7 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
             System.out.println("File di config loaded from " + configFile);
             Config.getInstance().toFile(configFile.toFile());
             for (StreamerConfig s : Config.getInstance().STREAMERS) {
+                streamelementsSockets.put(s.STREAMLABS_ACCOUNT, new StreamelementsSocket(s.STREAMELEMENTS_SECRET_TOKEN, new StreamelementsEventHandler(s.MINECRAFT_ACCOUNT)));
                 streamlabsSockets.put(s.STREAMLABS_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new StreamlabsEventHandler(s.MINECRAFT_ACCOUNT)));
                 twitchChatSockets.put(s.STREAMLABS_ACCOUNT, new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
                 System.out.println("Collegamento a " + s.STREAMLABS_ACCOUNT + " avvenuto con successo.");
@@ -78,11 +83,13 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
     }
 
     public void startSockets() {
+        streamelementsSockets.forEach((streamer, socket) -> socket.start());
         streamlabsSockets.forEach((streamer, socket) -> socket.start());
         twitchChatSockets.forEach((streamer, socket) -> socket.start());
     }
 
     public void stopSockets() {
+        streamelementsSockets.forEach((streamer, socket) -> socket.stop());
         streamlabsSockets.forEach((streamer, socket) -> socket.stop());
         twitchChatSockets.forEach((streamer, socket) -> socket.stop());
     }

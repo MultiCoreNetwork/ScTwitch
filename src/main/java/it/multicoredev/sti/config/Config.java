@@ -32,10 +32,12 @@ public class Config {
         this.STREAMERS.add(
                 new StreamerConfig(
                         "Your Streamlabs Name",
+                        "Your Streamelements Name",
                         "Your Twitch Name",
                         "Your YouTube Name",
                         "Your Minecraft Nickname",
                         "Your Streamlabs Socket API Token - https://streamlabs.com/dashboard#/settings/api-settings",
+                        "Your Streamelements JWT Token - https://streamelements.com/dashboard/account/channels",
                         "Your Twitch Chat Token - https://twitchapps.com/tmi/")
         );
     }
