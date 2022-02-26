@@ -38,7 +38,7 @@ if( !global_stop,
 	run('playsound minecraft:entity.item.pickup ambient @a');
 
     spawn('snow_golem', pos, str('{CustomName:\'{"text":"%s","color":"%s"}\'}',
-        actor,
+        replace(replace(replace(actor,'\\',''),'"',''),'\'',''),
         color
     ))
 );
