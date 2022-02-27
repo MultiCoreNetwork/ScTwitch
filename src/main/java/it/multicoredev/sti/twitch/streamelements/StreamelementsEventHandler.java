@@ -20,7 +20,7 @@ public class StreamelementsEventHandler {
     }
 
     public void handleStramelementsEvent(StreamelementsEvent event) {
-        if (event.getType().equals("donation")) {
+        if (event.getType().equals("tip")) {
             ScarpetStreamelementsEvent.STREAMELEMENTS_DONATION.onStreamelementsEvent(nickname, event);
         }
     }
