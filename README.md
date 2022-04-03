@@ -24,7 +24,7 @@ Twitch Integration for Gnembon's Scarpet
     ```
 - You can get your Streamlabs `Soket API Token` by creating an account at [Streamlabs](https://streamlabs.com/) and visiting the [API settings](https://streamlabs.com/dashboard#/settings/api-settings) page
 - You can get your Streamelements `JWT Token` by creating an account at [Streamelements](https://streamelements.com/) and visiting the [Account](https://streamelements.com/dashboard/account/channels) page
-- You can get your Twitch Chat Token by logging into your Twitch account and visiting the following URL:
+- You can get your Twitch `Chat Token` by logging into your Twitch account and visiting the following URL:
     https://twitchapps.com/tmi/
   
 ## Scarpet events
@@ -60,3 +60,8 @@ When an user subscribe to your YouTube channel
 #### `__on_youtube_superchat(player, actor, message, amount, formattedAmount, currency)`
 When an user donate you on YouTube with Superchat
 
+
+## Scarpet functions
+### TWITCH
+#### `twitch_send_message(streamer?, message)`
+Send a message to Twitch chat
