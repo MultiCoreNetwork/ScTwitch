@@ -6,15 +6,9 @@ import static carpet.settings.RuleCategory.EXPERIMENTAL;
 
 public class ScTwitchSettings {
     @Rule(
-            desc = "Ogni volta che un utente lascerà un sub/follow, ti verrà dato un albero.",
-            appSource = "sapling",
+            desc = "Adds twitchspawn file compatibility.",
+            appSource = "twitchspawn",
             category = {EXPERIMENTAL}
     )
-    public static boolean sctwitchSapling = false;
-    @Rule(
-            desc = "Ogni volta che un utente lascerà un follow, verrà evocato un golem di neve.",
-            appSource = "snowman",
-            category = {EXPERIMENTAL}
-    )
-    public static boolean sctwitchSnowman = false;
+    public static boolean twitchSpawn = false;
 }

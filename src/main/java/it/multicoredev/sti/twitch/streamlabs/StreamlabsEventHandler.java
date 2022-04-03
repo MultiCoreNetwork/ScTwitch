@@ -10,8 +10,8 @@ import javax.swing.*;
 
 public class StreamlabsEventHandler {
     public final String nickname;
-    private TwitchEventHandler twitchEventHandler;
-    private YouTubeEventHandler youTubeEventHandler;
+    private final TwitchEventHandler twitchEventHandler;
+    private final YouTubeEventHandler youTubeEventHandler;
 
     public StreamlabsEventHandler(String nickname) {
         this.nickname = nickname;

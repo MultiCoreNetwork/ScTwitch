@@ -6,7 +6,6 @@ import carpet.script.value.EntityValue;
 import carpet.script.value.NumericValue;
 import carpet.script.value.StringValue;
 import it.multicoredev.sti.twitch.streamelements.StreamelementsEvent;
-import it.multicoredev.sti.twitch.streamlabs.StreamlabsEvent;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.Arrays;
@@ -34,7 +33,9 @@ public class ScarpetStreamelementsEvent extends Event {
         super(name, reqArgs, isGlobalOnly);
     }
 
+    public static void noop() {
+    }
+
     public void onStreamelementsEvent(String playerName, StreamelementsEvent event) {
     }
-    public static void noop() {}
 }

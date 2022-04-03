@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.8-SNAPSHOT'
+	id 'fabric-loom' version '0.11-SNAPSHOT'
 	id 'maven-publish'
 	id "com.github.johnrengelman.shadow" version "6.0.0"
 }
@@ -10,17 +10,18 @@ repositories {
 	}
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = project.minecraft_version+'-'+project.mod_version
 group = project.maven_group
 
-minecraft {
+loom {
 }
 
 dependencies {
+	//to change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
@@ -50,6 +51,8 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
+
+	it.options.release = 17
 }
 
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
@@ -58,6 +61,13 @@ tasks.withType(JavaCompile) {
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
 }
 
 jar {
@@ -69,10 +79,7 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
-				builtBy remapJar
-			}
-			artifact("${project.buildDir.absolutePath}/libs/${archivesBaseName}-${project.minecraft_version}-${project.version}.jar"){
+			artifact(remapJar) {
 				builtBy remapJar
 			}
 			artifact(sourcesJar) {

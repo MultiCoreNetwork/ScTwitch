@@ -25,27 +25,23 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class ScTwitch implements CarpetExtension, ModInitializer {
     public static final String MOD_ID = "sctwitch";
     public static final String MOD_NAME = "ScTwitch";
-    public static final String MOD_VERSION = "1.4.57";
+    public static final String MOD_VERSION = "1.4.69";
     public static final boolean DEBUG = true;
 
     static {
         CarpetServer.manageExtension(new ScTwitch());
         CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("sctwitch_event_test", false));
-        CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("chat_message_event_test", false));
-        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("sapling", false));
-        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("snowman", false));
+        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("twitchspawn", false));
     }
 
-    public static Map<String, StreamlabsSocket> streamlabsSockets = new HashMap<>();
-    public static Map<String, StreamelementsSocket> streamelementsSockets = new HashMap<>();
-    public static Map<String, TwitchChatSocket> twitchChatSockets = new HashMap<>();
+    public static List<StreamlabsSocket> streamlabsSockets = new ArrayList<>();
+    public static List<StreamelementsSocket> streamelementsSockets = new ArrayList<>();
+    public static List<TwitchChatSocket> twitchChatSockets = new ArrayList<>();
 
     public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
         BundledModule module = new BundledModule(scriptName.toLowerCase(Locale.ROOT), null, false);
@@ -72,10 +68,10 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
             System.out.println("File di config loaded from " + configFile);
             Config.getInstance().toFile(configFile.toFile());
             for (StreamerConfig s : Config.getInstance().STREAMERS) {
-                streamelementsSockets.put(s.STREAMLABS_ACCOUNT, new StreamelementsSocket(s.STREAMELEMENTS_SECRET_TOKEN, new StreamelementsEventHandler(s.MINECRAFT_ACCOUNT)));
-                streamlabsSockets.put(s.STREAMLABS_ACCOUNT, new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new StreamlabsEventHandler(s.MINECRAFT_ACCOUNT)));
-                twitchChatSockets.put(s.STREAMLABS_ACCOUNT, new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
-                System.out.println("Collegamento a " + s.STREAMLABS_ACCOUNT + " avvenuto con successo.");
+                streamelementsSockets.add(new StreamelementsSocket(s.STREAMELEMENTS_SECRET_TOKEN, new StreamelementsEventHandler(s.MINECRAFT_ACCOUNT)));
+                streamlabsSockets.add(new StreamlabsSocket(s.STREAMLABS_SECRET_TOKEN, new StreamlabsEventHandler(s.MINECRAFT_ACCOUNT)));
+                twitchChatSockets.add(new TwitchChatSocket(s.TWITCH_ACCOUNT, s.TWITCH_CHAT_TOKEN, new TwitchEventHandler(s.MINECRAFT_ACCOUNT)));
+                System.out.println("Collegamento a " + s.TWITCH_ACCOUNT + " avvenuto con successo.");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,15 +79,20 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
     }
 
     public void startSockets() {
-        streamelementsSockets.forEach((streamer, socket) -> socket.start());
-        streamlabsSockets.forEach((streamer, socket) -> socket.start());
-        twitchChatSockets.forEach((streamer, socket) -> socket.start());
+        streamelementsSockets.forEach(StreamelementsSocket::start);
+        streamlabsSockets.forEach(StreamlabsSocket::start);
+        twitchChatSockets.forEach(TwitchChatSocket::start);
     }
 
     public void stopSockets() {
-        streamelementsSockets.forEach((streamer, socket) -> socket.stop());
-        streamlabsSockets.forEach((streamer, socket) -> socket.stop());
-        twitchChatSockets.forEach((streamer, socket) -> socket.stop());
+        streamelementsSockets.forEach(StreamelementsSocket::stop);
+        streamlabsSockets.forEach(StreamlabsSocket::stop);
+        twitchChatSockets.forEach(TwitchChatSocket::stop);
+    }
+
+    @Override
+    public void onServerLoadedWorlds(MinecraftServer server) {
+        onReload(server);
     }
 
     @Override

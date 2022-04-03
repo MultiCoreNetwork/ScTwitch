@@ -47,8 +47,8 @@ public class TwitchChatSocket {
 
     private TwitchEventHandler handler;
 
-    private String botName;
-    private String botOauth;
+    private final String botName;
+    private final String botOauth;
     private Thread thread;
     private Socket socket;
     private BufferedReader in;

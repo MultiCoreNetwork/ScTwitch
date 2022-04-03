@@ -31,8 +31,6 @@ public class Config {
         this.STREAMERS = new ArrayList<>();
         this.STREAMERS.add(
                 new StreamerConfig(
-                        "Your Streamlabs Name",
-                        "Your Streamelements Name",
                         "Your Twitch Name",
                         "Your YouTube Name",
                         "Your Minecraft Nickname",
@@ -66,8 +64,7 @@ public class Config {
     }
 
     private static Config fromDefaults() {
-        Config config = new Config();
-        return config;
+        return new Config();
     }
 
     public void toFile(String file) {
