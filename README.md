@@ -3,7 +3,7 @@ Twitch Integration for Gnembon's Scarpet
 
 ## Installation
 - Install [Fabric](https://fabricmc.net/use/)
-- Download [Carpet Mod](https://github.com/gnembon/carpet-mod/releases)
+- Download [Carpet Mod](https://github.com/gnembon/fabric-carpet/releases)
 - Download [ScTwitch](https://github.com/multicorenetwork/ScTwitch/releases)
 
 ## Configuration
