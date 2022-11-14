@@ -32,14 +32,10 @@ public class ScarpetTwitchFunctions {
                         streamerConfig -> streamerConfig.TWITCH_ACCOUNT.equals(params.get(1).getString())
                 ).collect(toList());
             } else {
-                try {
-                    PlayerEntity player = cc.s.getPlayer();
-                    channels = Config.getInstance().STREAMERS.stream().filter(
-                            streamerConfig -> streamerConfig.MINECRAFT_ACCOUNT.equals(player.getEntityName())
-                    ).collect(toList());
-                } catch (CommandSyntaxException e) {
-                    throw new InternalExpressionException("'twitch_send_message' requires a linked channel as second parameter");
-                }
+                PlayerEntity player = cc.s.getPlayer();
+                channels = Config.getInstance().STREAMERS.stream().filter(
+                        streamerConfig -> streamerConfig.MINECRAFT_ACCOUNT.equals(player.getEntityName())
+                ).collect(toList());
             }
             for (int i = 0; i < channels.size(); i++) {
                 try {

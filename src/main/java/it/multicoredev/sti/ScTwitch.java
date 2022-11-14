@@ -4,7 +4,7 @@ import carpet.CarpetExtension;
 import carpet.CarpetServer;
 import carpet.script.CarpetExpression;
 import carpet.script.CarpetScriptServer;
-import carpet.script.bundled.BundledModule;
+import carpet.script.Module;
 import it.multicoredev.sti.config.Config;
 import it.multicoredev.sti.config.StreamerConfig;
 import it.multicoredev.sti.scarpet.ScarpetTwitchEvents;
@@ -35,26 +35,14 @@ public class ScTwitch implements CarpetExtension, ModInitializer {
 
     static {
         CarpetServer.manageExtension(new ScTwitch());
-        CarpetScriptServer.registerBuiltInScript(sctwitchDefaultScript("sctwitch_event_test", false));
-        CarpetScriptServer.registerSettingsApp(sctwitchDefaultScript("twitchspawn", false));
+        CarpetScriptServer.registerBuiltInApp(Module.fromJarPath("assets/sctwitch/scripts/","sctwitch_event_test", false));
+        CarpetScriptServer.registerSettingsApp(Module.fromJarPath("assets/sctwitch/scripts/","twitchspawn", false));
     }
 
     public static List<StreamlabsSocket> streamlabsSockets = new ArrayList<>();
     public static List<StreamelementsSocket> streamelementsSockets = new ArrayList<>();
     public static List<TwitchChatSocket> twitchChatSockets = new ArrayList<>();
 
-    public static BundledModule sctwitchDefaultScript(String scriptName, boolean isLibrary) {
-        BundledModule module = new BundledModule(scriptName.toLowerCase(Locale.ROOT), null, false);
-        try {
-            module = new BundledModule(scriptName.toLowerCase(Locale.ROOT),
-                    IOUtils.toString(
-                            BundledModule.class.getClassLoader().getResourceAsStream("assets/sctwitch/scripts/" + scriptName + (isLibrary ? ".scl" : ".sc")),
-                            StandardCharsets.UTF_8
-                    ), isLibrary);
-        } catch (NullPointerException | IOException e) {
-        }
-        return module;
-    }
 
     public void createSockets() {
         try {

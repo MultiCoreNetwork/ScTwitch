@@ -1,64 +1,98 @@
-//////
-// twitchspawn by BisUmTo and iGoodiex
-// Allows you to create TSL integrations for Twitch.tv
-//
-// TSL wiki: https://igoodie.gitbook.io/twitchspawn/
-// NOTE: Some features are not yet implemented
-//
-// TSL folder: /<world_name>/scripts/twitchspawn.data/
-//////
+// CONFIG:
+global_event_interval = 40; // TICK
 
-__config() -> {
-    'requires' -> {
-        'sctwitch' -> '*'
+
+global_app_name = system_info('app_name');
+
+
+__config()->{
+    'stay_loaded' -> true,
+    'commands' -> {
+        'start' -> _() -> print('todo'),
+        'stop' -> _() -> print('todo'),
+        'status' -> _() -> print('todo'),
+        'reloadcfg' -> _() -> print('todo'),
+        'rules' -> _() -> print('todo'),
+        'quickrefresh' -> 'quickrefresh',
+        'simulate' -> _() -> print('todo'),
+        'test' -> _() -> print('todo'),
+        'test <streamer>' -> _(streamer) -> print('todo'),
+        'execute <tsl_action>' -> 'execute'
+    },
+    'arguments' -> {
+        'tsl_action' -> {
+            'type' -> 'text',
+            'suggest' -> [
+                'DROP apple 5',
+                'SHUFFLE armors DISPLAYING %["Pst, check your armors!"]%',
+                'EITHER DROP stick OR CHANGE main-hand INTO stick OR NOTHING'
+            ],
+            // TODO: dynamic suggester
+        },
+        'streamer' -> {
+            'type' -> 'term'
+            // todo
+        }
     }
 };
 
-// CONFIG:
-global_event_interval = 40; // in game ticks
+// COMMANDS
+quickrefresh() -> (
+    global_queue = [];
+    global_events = {};
+    n = for(list_files('','text'),
+        _parse(_)
+    );
+    print('tofix: Caricati '+ n +' file')
+);
+execute(tsl_action) -> (
+    words = _intoWords(tsl_action);
+    action = _parseAction(words:0, slice(words,1));
 
+    player = player() || 'console';
+    _processAction(action, _randomArgs(player))
+);
 
 // EVENT QUEUE
 global_queue = [];
 global_next_event = tick_time();
 
-global_app_name = system_info('app_name');
 __on_tick() ->
 if(global_next_event <= tick_time() && global_queue,
+    global_next_event = tick_time() + global_event_interval;
     call(global_queue:0);
     delete(global_queue:0);
-    global_next_event = tick_time() + global_event_interval
 );
 
 // TSL PARSER
 global_events = {};
+(
+    global_re_MULTI_LINE_COMMENT_BEGIN = '#\\*';
+    global_MULTI_LINE_COMMENT_BEGIN = '#*';
+    global_re_MULTI_LINE_COMMENT_END = '\\*#';
+    global_MULTI_LINE_COMMENT_END = '*#';
+    global_re_COMMENT = '#';
+    global_COMMENT = '#';
+    global_re_SPACE = ' ';
+    global_SPACE = ' ';
+    global_re_GROUPING = '%';
+    global_GROUPING = '%';
+    global_re_ESCAPE = '\\\\';
+    global_ESCAPE = '\\';
 
-global_re_MULTI_LINE_COMMENT_BEGIN = '#\\*';
-global_MULTI_LINE_COMMENT_BEGIN = '#*';
-global_re_MULTI_LINE_COMMENT_END = '\\*#';
-global_MULTI_LINE_COMMENT_END = '*#';
-global_re_COMMENT = '#';
-global_COMMENT = '#';
-global_re_SPACE = ' ';
-global_SPACE = ' ';
-global_re_GROUPING = '%';
-global_GROUPING = '%';
-global_re_ESCAPE = '\\\\';
-global_ESCAPE = '\\';
-
-global_DISPLAY_KEYWORD = 'DISPLAYING';
-global_EVENT_KEYWORD = 'ON';
-global_PREDICATE_KEYWORD = 'WITH';
+    global_DISPLAY_KEYWORD = 'DISPLAYING';
+    global_EVENT_KEYWORD = 'ON';
+    global_PREDICATE_KEYWORD = 'WITH';
+);
 
 
-_intoRules() -> (
-    script = join('\n', read_file('script', 'text'));
+_intoRules(script) -> (
     rule = '';
     rules = [];
-    
+
     // Split newlines
     lines = split('\\R', replace(script, '(?s)' + global_re_MULTI_LINE_COMMENT_BEGIN + '.*?' + global_re_MULTI_LINE_COMMENT_END));
-    
+
     // Check for unexpected beginning or ending of a multi-line comment
     for(lines,
         if(_ ~ global_re_MULTI_LINE_COMMENT_BEGIN != null,
@@ -147,7 +181,7 @@ _intoWords(rule) -> (
 
         // Space character
         if(_ == global_SPACE,
-            if(escaping, 
+            if(escaping,
                 throw('TSLSyntaxError', 'exception', 'Unexpected escaping on space character near -> ' + word)
             );
             if(!inGroup,
@@ -167,7 +201,7 @@ _intoWords(rule) -> (
 
     // Add last accumulation if it is not empty
     if(length(word) != 0, words += word);
-    
+
     // Still escaping
     if(escaping,
         throw('TSLSyntaxError', 'exception', 'Incomplete escape')
@@ -182,17 +216,20 @@ _intoWords(rule) -> (
 );
 _intoParts(words) -> (
     // Validate
-    sdrow = sort_key(words, __ += 1);
-    indexDisplay = length(words) - sdrow ~ global_DISPLAY_KEYWORD;
-    indexEvent = length(words) - sdrow ~ global_EVENT_KEYWORD;
-    indexPredicate = length(words) - sdrow ~ global_PREDICATE_KEYWORD;
+    sdrow = map(sort_key(words, __ += 1),lower(_));
+    indexDisplay = sdrow ~ lower(global_DISPLAY_KEYWORD);
+    indexDisplay = if(indexDisplay != null, length(words) - indexDisplay);
+    indexEvent = sdrow ~ lower(global_EVENT_KEYWORD);
+    indexEvent = if(indexEvent != null, length(words) - indexEvent);
+    indexPredicate = sdrow ~ lower(global_PREDICATE_KEYWORD);
+    indexPredicate = if(indexPredicate != null, length(words) - indexPredicate);
 
     // No Event
-    if(!indexEvent,
+    if(indexEvent == null,
         throw('TSLSyntaxError', 'exception', 'Expected at least one ' + global_EVENT_KEYWORD + ' statement.')
     );
 
-    // Wrong Display
+    // Wrong Displayt
     if(indexDisplay && indexDisplay >= indexEvent,
         throw('TSLSyntaxError', 'exception', 'Found ' + global_DISPLAY_KEYWORD + ' statement on unexpected location.')
     );
@@ -227,7 +264,7 @@ _intoParts(words) -> (
 
     eventName = '';
     if((wordCursor += 1) < length(words),
-        for(slice(words, wordCursor),
+        for([...slice(words, wordCursor), global_PREDICATE_KEYWORD],
             if(lower(_) == lower(global_PREDICATE_KEYWORD),
                 wordCursor += _i;
                 break(),
@@ -238,7 +275,7 @@ _intoParts(words) -> (
     );
 
     eventName = eventName ~ '^[ \t]*(.*?)[ \t]*$';
-    
+
     if(!eventName,
         throw('TSLSyntaxError', 'exception', 'Expected event name after ' + global_EVENT_KEYWORD + ' keyword')
     );
@@ -289,19 +326,17 @@ global_actions = {
                 throw('TSLSyntaxError', 'exception', 'Expected an integer, found instead -> ' + actionWords:1)
             );
             // TODO: Check if given item word is parse-able
-            self            
+            self
         ),
         'performAction' -> _(self, player, args) -> (
             input = _replaceExpressions(self:'itemRaw', args);
             itemStack = _parseItem(input);
             itemStack:1 = self:'itemAmount';
-
             nbt = nbt(str('{Item:{id:"%s",Count:%d}}',
                 itemStack:0,
                 itemStack:1
             ));
             nbt:'Item.tag' = itemStack:2;
-
             spawn('item', pos(player), nbt)
         ),
         'subtitleEvaluator' -> _(self, expression, args) -> (
@@ -315,25 +350,71 @@ global_actions = {
             )
         )
     }],
-    'SUMMON' -> [true, null],
-    'THROW' -> [true, null],
-    'CLEAR' -> [true, null],
-    'EXECUTE' -> [true, null],
-    'SHUFFLE' -> [true, null],
-    'CHANGE' -> [true, null],
-    'NOTHING' -> [true, null],
+    'SUMMON' -> [true, todo],
+    'THROW' -> [true, todo],
+    'CLEAR' -> [true, todo],
+    'EXECUTE' -> [true, {
+        null -> _(parameters) -> (
+            self = { 'message' -> _parseMessage(parameters) };
+            actionWords = _actionPart(parameters);
+            if(!length(actionWords),
+                throw('TSLSyntaxError', 'exception', 'Expected at least one command.')
+            );
 
-    'EITHER' -> [false, null],
-    'BOTH' -> [false, null],
-    'FOR' -> [false, null],
-    'WAIT' -> [true, null],
-    'REFLECT' -> [true, null],
+            if(!all(parameters, split('',_):0 == '/'),
+                throw('TSLSyntaxError', 'exception', 'Every command must start with \'/\' character')
+            );
 
-    'OS_RUN' -> [true, null]
+            self:'commands' = parameters;
+            self
+        ),
+        'performAction' -> _(self, player, args) -> (
+            for(self:'commands',
+                command = join('',slice(split('',_replaceExpressions(_, args)),1));
+                result = run(str('execute as %s run %s',player,command));
+                // Wohooo we knew iGoodie liked hacky solutions. ( ? :/ )
+                // If it yielded an error, and not worked as expected
+                // Then turn on the feedback, and run it again! Brilliant! What could go wrong? :))))))
+                if(result:0 <= 0,
+                    run(command);
+                );
+                logger('info', str('[%s.sc] Executed (Status:%s) -> %s', global_app_name, result:0, command));
+            )
+        )
+    }],
+    'SHUFFLE' -> [true, todo],
+    'CHANGE' -> [true, todo],
+    'NOTHING' -> [true, todo],
+
+    'EITHER' -> [false, todo],
+    'BOTH' -> [false, todo],
+    'FOR' -> [false, todo],
+    'WAIT' -> [true, todo],
+    'REFLECT' -> [true, todo],
+
+    'OS_RUN' -> [true, todo],
+
+    'PARKOUR_PENITENZE' -> [true,{
+        null -> _(parameters) -> (
+            self = { 'message' -> _parseMessage(parameters) };
+            actionWords = _actionPart(parameters);
+            if(length(actionWords) > 1,
+                throw('TSLSyntaxError', 'exception', 'Expected at most one parameter')
+            );
+            self:'amount' = actionWords:0 || 0;
+            self
+        ),
+        'performAction' -> _(self, player, args) -> (
+            amount = number(_replaceExpressions(self:'amount', args)) || 0;
+            signal_event('player_takes_damage', player, player, amount, args:'ActorNickname', player(args:'ActorNickname'))
+        )
+    }
+
+    ]
 };
 global_comparator = {
     'IN RANGE' -> _(left, right) -> (
-        values = right~'^\\[?(.+), ?(.+)\\]?$';
+        values = right~'^\\[(.+),(.+)\\]$';
         if(!values || type(values)!='list' || length(values)!=2,
             throw('TSLSyntaxError', 'exception', 'Expected format like [1.0,2.0], found -> ' + right)
         );
@@ -342,12 +423,11 @@ global_comparator = {
             throw('TSLSyntaxError', 'exception', 'Expected valid min number, found ->' + values:0)
         );
         if(max == null,
-            throw('TSLSyntaxError', 'exception', 'Expected valid max number, found ->' + values:1)
+            throw('TSLSyntaxError', 'exception', 'Expected valid dmber, found ->' + values:1)
         );
         if(min > max,
             throw('TSLSyntaxError', 'exception', 'Expected first value to be less than the second value.')
         );
-
         number = number(left);
         number != null && min <= number && max >= number
     ),
@@ -356,13 +436,13 @@ global_comparator = {
     ),
     'IS' -> _(left, right) -> (
         lower(left) == lower(right)
-    ), 
+    ),
     'PREFIX' -> _(left, right) -> (
         type(left) == 'string' && left ~ ('^'+right) != null
-    ), 
+    ),
     'POSTFIX' -> _(left, right) -> (
         type(left) == 'string' && left ~ (right+'$') != null
-    ), 
+    ),
     '=' -> _(left, right) -> (
         value = number(right);
         if(max == null,
@@ -370,52 +450,52 @@ global_comparator = {
         );
         number = number(left);
         number != null && value == number
-    ), 
+    ),
     '>' -> _(left, right) -> (
         value = number(right);
         if(max == null,
             throw('TSLSyntaxError', 'exception', 'Expected valid number, found ->' + value)
         );
         number = number(left);
-        number != null && value > number
-    ), 
+        number != null && number > value
+    ),
     '>=' -> _(left, right) -> (
         value = number(right);
         if(max == null,
             throw('TSLSyntaxError', 'exception', 'Expected valid number, found ->' + value)
         );
         number = number(left);
-        number != null && value >= number
-    ), 
+        number != null && number >= value
+    ),
     '<' -> _(left, right) -> (
         value = number(right);
         if(max == null,
             throw('TSLSyntaxError', 'exception', 'Expected valid number, found ->' + value)
         );
         number = number(left);
-        number != null && value < number
-    ), 
+        number != null && number < value
+    ),
     '<=' -> _(left, right) -> (
         value = number(right);
         if(max == null,
             throw('TSLSyntaxError', 'exception', 'Expected valid number, found ->' + value)
         );
         number = number(left);
-        number != null && value <= number
-    ), 
+        number != null && number <= value
+    ),
 };
 global_predicate = {
-    'actorNickname' -> ['actor'],
-    'message' -> ['message'],
-    'donationCurrency' -> ['currency','donation_currency'],
-    'donationAmount' -> ['amount','donation_amount'],
-    'subscriptionMonths' -> ['months','subscription_months'],
-    'subscriptionTier' -> ['tier','subscription_tier'],
-    'gifted' -> ['gifted'],
-    'viewerCount' -> ['viewers','viewer_count'],
-    'raiderCount' -> ['raiders','raider_count'],
-    'rewardTitle' -> ['title','reward_title'],
-    'chatBadges' -> ['badges','chat_badges']
+    'ActorNickname' -> ['actor'],
+    'Message' -> ['message'],
+    'DonationCurrency' -> ['currency','donation_currency'],
+    'DonationAmount' -> ['amount','donation_amount'],
+    'SubscriptionMonths' -> ['months','subscription_months'],
+    'SubscriptionTier' -> ['tier','subscription_tier'],
+    'Gifted' -> ['gifted'],
+    'ViewerCount' -> ['viewers','viewer_count'],
+    'RaiderCount' -> ['raiders','raider_count'],
+    'RewardTitle' -> ['title','reward_title'],
+    'ChatBadges' -> ['badges','chat_badges']
 };
 
 _parseComparator(symbol) -> (
@@ -453,7 +533,7 @@ _parsePredicates(parameters) -> (
 
         // Create predicate and accumulate
         predicates += {
-            'PropertyName' -> propertyName, 
+            'PropertyName' -> propertyName,
             'Comparator' -> _parseComparator(symbol),
             'Right' -> right
         }
@@ -485,18 +565,19 @@ _parseMessage(words) -> (
     null
 );
 _parseItem(string) -> (
-    item = string ~ '(.*?)\\{.*';
+    item = string ~ '(.*?)(?:\\{.*|$)';
     nbt = string-item || '{}';
     [item, 1, nbt(nbt)]
 );
-_parse() -> (
-
-    global_events = {};
+_parse(name) -> (
     // tokenize into rules first
-    rules = _intoRules();
+    script = join('\n', read_file(name, 'text'));
+    if(!script,
+        throw('TSLSyntaxError', 'exception', 'Empty file -> ' + name)
+    );
+    rules = _intoRules(script);
 
     syntaxErrors = [];
-
     // Traverse every rule
     for(rules,
         rule = _;
@@ -518,9 +599,13 @@ _parse() -> (
             // Chain all the nodes on event node
             event:'Predicates' += predicates;
             event:'Actions' += action;
-            
+
             // Put event to where it belongs
-            global_events:lower(event:'EventName') = event,
+            if(global_supported_events~lower(event:'EventName')!=null,
+                global_events:lower(event:'EventName') = event,
+            // else
+                throw('TSLSyntaxError', 'exception', 'Unsupported event -> ' + event:'EventName')
+            ),
         'TSLSyntaxError',
             syntaxErrors += [rule, _, _trace]
         )
@@ -557,7 +642,7 @@ _replaceExpressions(input, args) -> (
                 expression == 'amount_f' && args:'DonationAmount', str('%.2f',args:'DonationAmount'),
                 expression == 'currency' && args:'DonationCurrency', args:'DonationCurrency',
                 expression == 'months' && args:'SubscriptionMonths', args:'SubscriptionMonths',
-                expression == 'tier' && args:'SubscriptionTier' != -1, 
+                expression == 'tier' && args:'SubscriptionTier' != -1,
                     if(args:'SubscriptionTier' == 0,
                         'Prime',
                         args:'SubscriptionTier'
@@ -570,16 +655,16 @@ _replaceExpressions(input, args) -> (
                 expression == 'time',  str('%02d:%02d:%02d', slice(convert_date(unix_time()),3)),
                 expression == 'time_utc', str('%02d:%02d:%02d', slice(convert_date(unix_time()),3)), // TODO FIX
                 expression == 'unix', unix_time(),
-                null                
+                null
             );
             if(evaluation, evaluation, '${' + expression + '}')
         )),
     // else
-        string = '';       
+        string = '';
         while(input, length(input),
             expression = input ~ '\\$\\{(.*?)\\}';
             if(expression != null,
-                prefix = split('\\$\\{.*?\\}', input):0;
+                prefix = split('\\$\\{.*?\\}', input):0 || '';
                 string += prefix;
                 string += call(args, expression);
                 index = length(prefix) + length(expression) + 3;
@@ -596,7 +681,7 @@ _replaceExpressions(input, args) -> (
 _extractArg(args, name) -> (
     for(global_predicate,
         if(global_predicate:_ ~ lower(name) != null,
-            return(_); 
+            return(_);
         )
     );
     throw('TSLRuntimeError', 'exception', 'Unknown tsl predicate field -> '+name)
@@ -643,9 +728,136 @@ _processEvent(event_name, args) -> (
     return(false)
 );
 
-// EVENTS
-__on_player_jumps(player)->(
-    global_queue += (_(outer(player)) -> (
-        print(player(), player + ' salta')
-    ));
-)
+_randomArgs(player, ... info) -> (
+    info = if(info && info:0, info:0, {});
+    args = {
+        'EventName' -> info:'EventName' || title(rand(global_supported_events)),
+        'StreamerNickname' -> info:'StreamerNickname' || player() || 'RandomStreamer',
+        'ActorNickname' -> info:'ActorNickname' || 'RandomDude',
+        'Message' -> info:'Message' || 'Random event message',
+        'DonationAmount' -> info:'DonationAmount' || rand(1000),
+        'DonationCurrency' -> info:'DonationCurrency' || rand(['USD', 'TRY', 'EUR']),
+        'SubscriptionMonths' -> info:'SubscriptionMonths' || floor(rand(99)+1),
+        'SubscriptionTier' -> info:'SubscriptionTier' || floor(rand(4)),
+        'Gifted' -> info:'Gifted' || bool(rand(2)),
+        'ViewerCount' -> info:'ViewerCount' || floor(rand(99)+1),
+        'RaiderCount' -> info:'RaiderCount' || floor(rand(99)+1)
+    }
+);
+
+// TWITCH EVENTS
+global_supported_events = [
+    'twitch follow',
+    'twitch subscription gift',
+    'twitch subscription',
+    'twitch host',
+    'twitch raid',
+    'donation',
+    'twitch chat message',
+    'twitch channel point reward',
+    'twitch bits'
+];
+__on_twitch_follow(player, actor) -> (
+    args = {
+        'EventName' -> 'Twitch Follow',
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_subscription_gift(player, actor, tier, amount) -> (
+    args = {
+        'EventName' -> 'Twitch Subscription Gift',
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'DonationAmount' -> amount,
+        'SubscriptionTier' -> tier,
+        'Gifted' -> true
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_subscription(player, actor, message, tier, months, resubbed, streak, gifted, gifter) -> (
+    args = {
+        'EventName' -> 'Twitch Subscription',
+        'Message' -> message,
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'SubscriptionMonths' -> months,
+        'SubscriptionTier' -> tier,
+        'Gifted' -> gifted
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_host(player, actor, viewers) -> (
+    args = {
+        'EventName' -> 'Twitch Host',
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'ViewerCount' -> viewers
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_raid(player, actor, viewers) -> (
+    args = {
+        'EventName' -> 'Twitch Raid',
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'RaiderCount' -> viewers
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_streamlabs_donation(player, actor, message, amount, formattedAmount, currency) -> (
+    args = {
+        'EventName' -> 'Donation',
+        'Message' -> message,
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'DonationAmount' -> amount,
+        'DonationCurrency' -> currency
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_bits(player, actor, message, amount) -> (
+    args = {
+        'EventName' -> 'Twitch Bits',
+        'Message' -> message,
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'DonationAmount' -> amount
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_chat_message(player, actor, message, badges, subscriptionMonths) -> (
+    args = {
+        'EventName' -> 'Twitch Chat Message',
+        'Message' -> message,
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'SubscriptionMonths' -> subscriptionMonths,
+        'ChatBadges' -> badges
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+__on_twitch_custom_reward(player, actor, message, badges, subscriptionMonths, customRewardId) -> (
+    args = {
+        'EventName' -> 'Twitch Channel Point Reward',
+        'Message' -> message,
+        'ActorNickname' -> actor,
+        'StreamerNickname' -> player,
+        'SubscriptionMonths' -> subscriptionMonths,
+        'ChatBadges' -> badges,
+        'RewardTitle' -> customRewardId
+    };
+    global_queue += (_(outer(args)) -> _processEvent(args:'EventName', args));
+    logger('debug', str('[%s.sc] Queued %s event', global_app_name, args:'EventName'))
+);
+// INITIALIZE
+quickrefresh();
